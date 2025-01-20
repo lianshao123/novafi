@@ -1,12 +1,12 @@
 import Navigate from "@/components/home/navigate";
 import type { FormProps } from "antd";
-import { Button, Form, Input, Radio, Select } from "antd";
+import { Button, Form, Input, message, Radio, Select } from "antd";
 import { ethers } from "ethers";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAccount, useWalletClient, useConfig } from "wagmi";
 import { writeContract } from "wagmi/actions";
-import {abi} from "@/config/EchoooMallPayment.json"
-import { abi as erc20Abi } from "@/config/Erc20.json"
+import { abi } from "@/config/EchoooMallPayment.json";
+import { abi as erc20Abi } from "@/config/Erc20.json";
 
 type FieldType = {
   transactionId?: string; // 交易 id
@@ -14,97 +14,136 @@ type FieldType = {
   merchanAddress?: string; // 商户地址
   receivingAddress?: string; // 接收地址
   currency?: string; // 选择的币种
+  transactionIdBytes32?: string;
 };
 
 const { Option } = Select;
 
-const echoooMallPaymentAddress = "0x9fBe233D9B8E7f06a5ca7c9f680c473091B46001"
-const USDCAddress = "0xA3799376C9C71a02e9b79369B929654B037a410D"
-
-// const approveAbi = [
-//   "function approve(address spender, uint256 amount) public returns (bool)"
-// ];
-
-
+const echoooMallPaymentAddress = "0x9fBe233D9B8E7f06a5ca7c9f680c473091B46001";
+const USDCAddress = "0xA3799376C9C71a02e9b79369B929654B037a410D";
 
 export default function Index() {
+  const [form] = Form.useForm();
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient();
   const config = useConfig();
   const [isWithdraw, setIsWithdraw] = useState(false); // 状态：是否为“提取资金”
-  const [txHash, setTxHash] = useState<string>("")
+  const [isRefund, setIsRefund] = useState(false); // 状态：是否为“退款”
+  const [txHash, setTxHash] = useState<string>("");
+  const [txIdBytes32, setTxIdBytes32] = useState<string>("")
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     console.log("values=======", values);
-    
-    if (!walletClient) {
-      console.error("No wallet client found.");
-      return;
+    try {
+      // 下单逻辑
+      if (!walletClient) {
+        console.error("No wallet client found.");
+        return;
+      }
+      if (isWithdraw) {
+        // 提现逻辑
+        console.log("Withdraw initiated");
+        const txWithdraw = await writeContract(config, {
+          address: echoooMallPaymentAddress,
+          abi,
+          functionName: "withdrawFunds",
+          args: [
+            values.transactionIdBytes32,
+            values.receivingAddress
+          ],
+        });
+        console.log("txWithdraw======", txWithdraw);
+        
+        setTxHash(txWithdraw)
+        message.success("Withdraw successful!");
+      } else if (isRefund) {
+        // 退款逻辑
+        const txReceive = await writeContract(config, {
+          address: echoooMallPaymentAddress,
+          abi,
+          functionName: "refundOrder",
+          args: [
+            values.transactionIdBytes32,
+          ],
+        });
+        console.log("txReceive======", txReceive);
+        setTxHash(txReceive)
+        message.success("Refund successful!");
+      } else {
+        const tx = await writeContract(config, {
+          address: USDCAddress,
+          abi: erc20Abi,
+          functionName: "approve",
+          args: [
+            echoooMallPaymentAddress,
+            ethers.utils.parseUnits(String(values.amount), 18),
+          ],
+        });
+
+        console.log("Transaction sent:", tx);
+        const transactionIdBytes32 = ethers.utils.formatBytes32String(
+          String(Math.random())
+        );
+        setTxIdBytes32(transactionIdBytes32)
+        const txPay = await writeContract(config, {
+          address: echoooMallPaymentAddress,
+          abi,
+          functionName: "placeOrder",
+          args: [
+            transactionIdBytes32,
+            USDCAddress,
+            ethers.utils.parseUnits(String(values.amount), 18),
+            values.merchanAddress,
+          ],
+        });
+        console.log("Order Transaction:", txPay);
+        setTxHash(txPay);
+        message.success("Order placed successfully!");
+      }
+    } catch (error) {
+      message.error("Transaction error!");
+      console.error(error);
     }
-    console.log("walletClient.chain.rpcUrls.default.http[0]=======", walletClient.chain.rpcUrls.default.http[0]);
-    const tx = await writeContract(config, {
-      address: USDCAddress,       // ERC20 合约地址
-      abi: erc20Abi,                  // ERC20 合约 ABI
-      functionName: "approve",        // 要调用的方法
-      args: [echoooMallPaymentAddress, ethers.utils.parseUnits(String(values.amount), 18)], // 方法参数
-    });
-
-    console.log("Transaction sent:", tx);
-    const transactionId = ethers.utils.formatBytes32String(String(values.transactionId));  // TODO
-    const txPay = await writeContract(config, {
-      address: echoooMallPaymentAddress,       // ERC20 合约地址
-      abi,                  // ERC20 合约 ABI
-      functionName: "placeOrder",        // 要调用的方法
-      args: [transactionId, USDCAddress, ethers.utils.parseUnits(String(values.amount), 18), values.merchanAddress ], // 方法参数
-    });
-    console.log("txPay==========", txPay);
-    setTxHash(txPay)
-    // 等待交易完成
-    // const receipt = await tx.wait();
-    // 创建一个 Ethers.js 的 Provider 和 Signer
-    // const provider = new ethers.BrowserProvider(walletClient);
-    // const provider = new ethers.providers.Web3Provider(
-    //   walletClient.provider as any
-    // );
-    // const signer = await provider.getSigner();
-    // console.log("signer=======", signer);
-    // // const signer = new ethers.Web3Provider(provider).getSigner(address);
-
-    // // 创建 ERC20 合约实例
-    // const erc20Contract = new ethers.Contract(USDCAddress, approveAbi, signer);
-    // // const transactionId = ethers.utils.formatBytes32String("tx3");
-    // // console.log("transactionId======", transactionId);
-    // console.log("address======", address);
-    console.log("Success:", values);
   };
-  
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
-    console.log("address==2====", address);
-    console.log("walletClient==2====", walletClient);
+
+  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
+    errorInfo
+  ) => {
     console.log("Failed:", errorInfo);
   };
+
+  useEffect(() => {
+    form.resetFields(); // 清空表单
+    setTxIdBytes32("")
+    setTxHash("")
+  }, [isWithdraw, isRefund]);
 
   return (
     <div className="flex flex-col w-screen h-screen bg-[#f7f9fb]">
       <Navigate />
       <div className="flex justify-center mt-20 flex-col">
         <Form
+          form={form}
           name="basic"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 1000, position: "relative" }}
           initialValues={{
             remember: true,
-            currency: "USDC", // 默认币种为 USDC
+            currency: "USDC",
           }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          {/* 切换模式按钮，放在左上角 */}
+          {/* 切换模式按钮 */}
           <Radio.Group
-            onChange={(e) => setIsWithdraw(e.target.value === "withdraw")}
-            value={isWithdraw ? "withdraw" : "order"}
+            onChange={(e) => {
+              const value = e.target.value;
+              setIsWithdraw(value === "withdraw");
+              setIsRefund(value === "refund");
+            }}
+            value={isWithdraw ? "withdraw" : isRefund ? "refund" : "order"}
             style={{
               position: "absolute",
               top: -40,
@@ -113,17 +152,18 @@ export default function Index() {
           >
             <Radio.Button value="order">Order</Radio.Button>
             <Radio.Button value="withdraw">Withdraw</Radio.Button>
+            <Radio.Button value="refund">Refund</Radio.Button>
           </Radio.Group>
           {/* 动态表单 */}
           {isWithdraw ? (
             <>
               <Form.Item<FieldType>
-                label="Transaction ID"
-                name="transactionId"
+                label="Transaction ID Bytes32"
+                name="transactionIdBytes32"
                 rules={[
                   {
                     required: true,
-                    message: "Please input your transaction id!",
+                    message: "Please input your transaction id bytes32!",
                   },
                 ]}
               >
@@ -142,21 +182,23 @@ export default function Index() {
                 <Input className="ml-16" />
               </Form.Item>
             </>
-          ) : (
+          ) : isRefund ? (
             <>
               <Form.Item<FieldType>
-                label="Transaction ID"
-                name="transactionId"
+                label="Transaction ID Bytes32"
+                name="transactionIdBytes32"
                 rules={[
                   {
-                    required: false,
-                    message: "Please input your transaction id!",
+                    required: true,
+                    message: "Please input your transaction id bytes32!",
                   },
                 ]}
               >
                 <Input className="ml-16" />
               </Form.Item>
-              {/* 新增币种选择 */}
+            </>
+          ) : (
+            <>
               <Form.Item<FieldType>
                 label="Currency"
                 name="currency"
@@ -195,14 +237,16 @@ export default function Index() {
               >
                 <Input className="ml-16" />
               </Form.Item>
-              <div className="flex justify-center">
-                <span>tx: {txHash}</span>
-              </div>
             </>
           )}
-          {/* 提交按钮，放在右下角 */}
+          <div className="flex justify-center flex-col w-screen items-center">
+            <span>tx: {txHash}</span>
+            {
+              !isRefund && !isWithdraw ? 
+              <span>transactionIdBytes32: {txIdBytes32}</span>: null
+            }
+          </div>
           <Form.Item
-            label={null}
             style={{
               position: "absolute",
               bottom: -60,
@@ -210,7 +254,7 @@ export default function Index() {
             }}
           >
             <Button type="primary" htmlType="submit">
-              {isWithdraw ? "Withdraw" : "Submit"}
+              {isWithdraw ? "Withdraw" : isRefund ? "Refund" : "Submit"}
             </Button>
           </Form.Item>
         </Form>
