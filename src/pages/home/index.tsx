@@ -3,7 +3,7 @@ import type { FormProps } from "antd";
 import { Button, Form, Input, message, Radio, Select } from "antd";
 import { ethers } from "ethers";
 import { useState, useEffect } from "react";
-import { useAccount, useWalletClient, useConfig } from "wagmi";
+import { useWalletClient, useConfig } from "wagmi";
 import { writeContract } from "wagmi/actions";
 import { abi } from "@/config/EchoooMallPayment.json";
 import { abi as erc20Abi } from "@/config/Erc20.json";
@@ -24,7 +24,6 @@ const USDCAddress = "0xA3799376C9C71a02e9b79369B929654B037a410D";
 
 export default function Index() {
   const [form] = Form.useForm();
-  const { address } = useAccount();
   const { data: walletClient } = useWalletClient();
   const config = useConfig();
   const [isWithdraw, setIsWithdraw] = useState(false); // 状态：是否为“提取资金”
