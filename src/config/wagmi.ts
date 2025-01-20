@@ -1,5 +1,5 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
-import { baseMsg } from "@/config/base"
+// import { baseMsg } from "@/config/base"
 
 import {
   arbitrum,
@@ -7,7 +7,7 @@ import {
   mainnet,
   optimism,
   polygon,
-  sepolia,
+  // sepolia,
 } from 'wagmi/chains';
 
 export const config = getDefaultConfig({
@@ -19,7 +19,7 @@ export const config = getDefaultConfig({
     arbitrum,
     polygon,
     optimism,
-    ...(baseMsg.TESTNETS ? [sepolia] : []),
+    // ...(baseMsg.TESTNETS ? [sepolia] : []),
   ],
   ssr: true,
 });
