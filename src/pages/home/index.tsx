@@ -32,7 +32,6 @@ export default function Index() {
   const [txIdBytes32, setTxIdBytes32] = useState<string>("")
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-    console.log("values=======", values);
     try {
       // 下单逻辑
       if (!walletClient) {
@@ -51,7 +50,6 @@ export default function Index() {
             values.receivingAddress
           ],
         });
-        console.log("txWithdraw======", txWithdraw);
         
         setTxHash(txWithdraw)
         message.success("Withdraw successful!");
@@ -65,7 +63,6 @@ export default function Index() {
             values.transactionIdBytes32,
           ],
         });
-        console.log("txReceive======", txReceive);
         setTxHash(txReceive)
         message.success("Refund successful!");
       } else {
@@ -79,7 +76,6 @@ export default function Index() {
           ],
         });
 
-        console.log("Transaction sent:", tx);
         const transactionIdBytes32 = ethers.utils.formatBytes32String(
           String(Math.random())
         );
@@ -95,7 +91,6 @@ export default function Index() {
             values.merchanAddress,
           ],
         });
-        console.log("Order Transaction:", txPay);
         setTxHash(txPay);
         message.success("Order placed successfully!");
       }
