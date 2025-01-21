@@ -29,7 +29,7 @@ export default function Index() {
   const [isWithdraw, setIsWithdraw] = useState(false); // 状态：是否为“提取资金”
   const [isRefund, setIsRefund] = useState(false); // 状态：是否为“退款”
   const [txHash, setTxHash] = useState<string>("");
-  const [txIdBytes32, setTxIdBytes32] = useState<string>("")
+  const [txIdBytes32, setTxIdBytes32] = useState<string>("");
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     try {
@@ -39,34 +39,39 @@ export default function Index() {
         return;
       }
       if (isWithdraw) {
-        // 提现逻辑
-        console.log("Withdraw initiated");
-        const txWithdraw = await writeContract(config, {
-          address: echoooMallPaymentAddress,
-          abi,
-          functionName: "withdrawFunds",
-          args: [
-            values.transactionIdBytes32,
-            values.receivingAddress
-          ],
-        });
-        
-        setTxHash(txWithdraw)
-        message.success("Withdraw successful!");
+        try {
+          // 提现逻辑
+          console.log("Withdraw initiated");
+          const txWithdraw = await writeContract(config, {
+            address: echoooMallPaymentAddress,
+            abi,
+            functionName: "withdrawFunds",
+            args: [values.transactionIdBytes32, values.receivingAddress],
+          });
+
+          setTxHash(txWithdraw);
+          message.success("Withdraw successful!");
+        } catch (error) {
+          message.error("Transaction error!");
+          console.error(error);
+        }
       } else if (isRefund) {
-        // 退款逻辑
-        const txReceive = await writeContract(config, {
-          address: echoooMallPaymentAddress,
-          abi,
-          functionName: "refundOrder",
-          args: [
-            values.transactionIdBytes32,
-          ],
-        });
-        setTxHash(txReceive)
-        message.success("Refund successful!");
+        try {
+          // 退款逻辑
+          const txReceive = await writeContract(config, {
+            address: echoooMallPaymentAddress,
+            abi,
+            functionName: "refundOrder",
+            args: [values.transactionIdBytes32],
+          });
+          setTxHash(txReceive);
+          message.success("Refund successful!");
+        } catch (error) {
+          message.error("Transaction error!");
+          console.error(error);
+        }
       } else {
-        const tx = await writeContract(config, {
+        await writeContract(config, {
           address: USDCAddress,
           abi: erc20Abi,
           functionName: "approve",
@@ -79,7 +84,7 @@ export default function Index() {
         const transactionIdBytes32 = ethers.utils.formatBytes32String(
           String(Math.random())
         );
-        setTxIdBytes32(transactionIdBytes32)
+        setTxIdBytes32(transactionIdBytes32);
         const txPay = await writeContract(config, {
           address: echoooMallPaymentAddress,
           abi,
@@ -108,8 +113,8 @@ export default function Index() {
 
   useEffect(() => {
     form.resetFields(); // 清空表单
-    setTxIdBytes32("")
-    setTxHash("")
+    setTxIdBytes32("");
+    setTxHash("");
   }, [isWithdraw, isRefund]);
 
   return (
@@ -235,10 +240,9 @@ export default function Index() {
           )}
           <div className="flex justify-center flex-col w-screen items-center">
             <span>tx: {txHash}</span>
-            {
-              !isRefund && !isWithdraw ? 
-              <span>transactionIdBytes32: {txIdBytes32}</span>: null
-            }
+            {!isRefund && !isWithdraw ? (
+              <span>transactionIdBytes32: {txIdBytes32}</span>
+            ) : null}
           </div>
           <Form.Item
             style={{
