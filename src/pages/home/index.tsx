@@ -19,7 +19,7 @@ type FieldType = {
 
 const { Option } = Select;
 
-const echoooMallPaymentAddress = "0x9fBe233D9B8E7f06a5ca7c9f680c473091B46001";
+const echoooMallPaymentAddress = "0x0A9901653413432F193a4397293667ebDEFc9da9";
 const USDCAddress = "0xA3799376C9C71a02e9b79369B929654B037a410D";
 
 export default function Index() {
@@ -42,11 +42,12 @@ export default function Index() {
         try {
           // 提现逻辑
           console.log("Withdraw initiated");
+          const transactionBatch = values.transactionIdBytes32?.split(",")
           const txWithdraw = await writeContract(config, {
             address: echoooMallPaymentAddress,
             abi,
-            functionName: "withdrawFunds",
-            args: [values.transactionIdBytes32, values.receivingAddress],
+            functionName: "withdrawFundsBatch",
+            args: [transactionBatch, values.receivingAddress],
           });
 
           setTxHash(txWithdraw);
@@ -58,11 +59,12 @@ export default function Index() {
       } else if (isRefund) {
         try {
           // 退款逻辑
+          const transactionBatch = values.transactionIdBytes32?.split(",")
           const txReceive = await writeContract(config, {
             address: echoooMallPaymentAddress,
             abi,
-            functionName: "refundOrder",
-            args: [values.transactionIdBytes32],
+            functionName: "refundOrdersBatch",
+            args: [transactionBatch],
           });
           setTxHash(txReceive);
           message.success("Refund successful!");
@@ -166,7 +168,7 @@ export default function Index() {
                   },
                 ]}
               >
-                <Input className="ml-16" />
+                <Input className="ml-16" placeholder="transaction id bytes32 01,transaction id bytes32 02"/>
               </Form.Item>
               <Form.Item<FieldType>
                 label="Receiving Address"
@@ -193,7 +195,7 @@ export default function Index() {
                   },
                 ]}
               >
-                <Input className="ml-16" />
+                <Input className="ml-16" placeholder="transaction id bytes32 01,transaction id bytes32 02"/>
               </Form.Item>
             </>
           ) : (
