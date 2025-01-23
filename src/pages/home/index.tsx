@@ -93,7 +93,7 @@ export default function Index() {
         setTxHash(txUnlockUser);
         message.success("Unlock User successful!");
       } else {
-        await writeContract(config, {
+        const approveTx = await writeContract(config, {
           address: USDCAddress,
           abi: erc20Abi,
           functionName: "approve",
@@ -102,7 +102,7 @@ export default function Index() {
             ethers.utils.parseUnits(String(values.amount), 18),
           ],
         });
-
+        console.log("approveTx:", approveTx);
         const transactionIdBytes32 = ethers.utils.formatBytes32String(
           String(Math.random())
         );
@@ -178,7 +178,8 @@ export default function Index() {
             >
               <Input
                 className="ml-16"
-                placeholder="Transaction ID Bytes32 01,Transaction ID Bytes32 02"
+                placeholder={ currentAction === "lockTx" ||
+            currentAction === "unlockTx" ? "Transaction ID Bytes32":"Transaction ID Bytes32 01,Transaction ID Bytes32 02"}
               />
             </Form.Item>
           )}
