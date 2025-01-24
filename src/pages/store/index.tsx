@@ -152,13 +152,13 @@ export default function Index() {
             value={currentAction}
             style={{ position: "absolute", top: -40, left: 200 }}
           >
-            <Radio.Button value="order" className="hidden">Order</Radio.Button>
-            {/* <Radio.Button value="withdraw">Withdraw</Radio.Button>
+            {/* <Radio.Button value="order">Order</Radio.Button> */}
+            <Radio.Button value="withdraw">Withdraw</Radio.Button>
             <Radio.Button value="refund">Refund</Radio.Button>
             <Radio.Button value="lockTx">LockTx</Radio.Button>
             <Radio.Button value="unlockTx">UnlockTx</Radio.Button>
             <Radio.Button value="lockUser">LockUser</Radio.Button>
-            <Radio.Button value="unlockUser">UnlockUser</Radio.Button> */}
+            <Radio.Button value="unlockUser">UnlockUser</Radio.Button>
           </Radio.Group>
 
           {/* 动态表单 */}

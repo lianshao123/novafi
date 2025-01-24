@@ -13,13 +13,14 @@ import { config } from './config/wagmi';
 
 
 const Home = React.lazy(() => import("./pages/home"));
+const Store = React.lazy(() => import("./pages/store"));
 
 export const baseRouterName = "novafi";
 export const routerMap: RouteObject[] = [
     {
         index: true,
         loader: async () => {
-            return redirect("/novafi/home");
+            return redirect("/novafi/pay");
         },
         errorElement: <div>404</div>,
     },
@@ -37,8 +38,12 @@ export const routerMap: RouteObject[] = [
                         element: <React.Suspense fallback={<>...</>}><Home /></React.Suspense>,
                     },
                     {
-                        path: "home",
+                        path: "pay",
                         element: <React.Suspense fallback={<>...</>}><Home /></React.Suspense>,
+                    },
+                    {
+                        path: "store",
+                        element: <React.Suspense fallback={<>...</>}><Store /></React.Suspense>,
                     }
                 ]
             },
