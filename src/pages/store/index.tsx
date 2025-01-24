@@ -26,7 +26,7 @@ export default function Index() {
   const [form] = Form.useForm();
   const { data: walletClient } = useWalletClient();
   const config = useConfig();
-  const [currentAction, setCurrentAction] = useState("order"); // 当前操作类型
+  const [currentAction, setCurrentAction] = useState("withdraw"); // 当前操作类型
   const [txHash, setTxHash] = useState<string>("");
   const [txIdBytes32, setTxIdBytes32] = useState<string>("");
 
@@ -56,7 +56,7 @@ export default function Index() {
         });
         setTxHash(txRefund);
         message.success("Refund successful!");
-      } else if (currentAction === "lockTx") {        
+      } else if (currentAction === "lockTx") {
         const txLock = await writeContract(config, {
           address: echoooMallPaymentAddress,
           abi,
@@ -135,7 +135,7 @@ export default function Index() {
   return (
     <div className="flex flex-col w-screen h-screen bg-[#f7f9fb]">
       <Navigate />
-      <div className="flex justify-center mt-20 flex-col">
+      <div className="flex justify-center mt-20 flex-col items-center">
         <Form
           form={form}
           name="basic"
@@ -147,128 +147,135 @@ export default function Index() {
           autoComplete="off"
         >
           {/* 切换模式按钮 */}
-          <Radio.Group
-            onChange={(e) => setCurrentAction(e.target.value)}
-            value={currentAction}
-            style={{ position: "absolute", top: -40, left: 200 }}
-          >
-            {/* <Radio.Button value="order">Order</Radio.Button> */}
-            <Radio.Button value="withdraw">Withdraw</Radio.Button>
-            <Radio.Button value="refund">Refund</Radio.Button>
-            <Radio.Button value="lockTx">LockTx</Radio.Button>
-            <Radio.Button value="unlockTx">UnlockTx</Radio.Button>
-            <Radio.Button value="lockUser">LockUser</Radio.Button>
-            <Radio.Button value="unlockUser">UnlockUser</Radio.Button>
-          </Radio.Group>
-
+          <div className="flex justify-center">
+            <Radio.Group
+              onChange={(e) => setCurrentAction(e.target.value)}
+              value={currentAction}
+              style={{ position: "absolute", top: -40 }}
+              className="lg:left-[200px]"
+            >
+              <div className="flex">
+                {/* <Radio.Button value="order">Order</Radio.Button> */}
+                <Radio.Button
+                  value="withdraw"
+                  className="w-[63px] text-[10px] flex items-center justify-center lg:w-[90px] lg:text-sm"
+                >
+                  Withdraw
+                </Radio.Button>
+                <Radio.Button
+                  value="refund"
+                  className="w-[63px] text-[10px] flex items-center justify-center lg:w-[90px] lg:text-sm"
+                >
+                  Refund
+                </Radio.Button>
+                <Radio.Button
+                  value="lockTx"
+                  className="w-[63px] text-[10px] flex items-center justify-center lg:w-[90px] lg:text-sm"
+                >
+                  LockTx
+                </Radio.Button>
+                <Radio.Button
+                  value="unlockTx"
+                  className="w-[63px] text-[10px] flex items-center justify-center lg:w-[90px] lg:text-sm"
+                >
+                  UnlockTx
+                </Radio.Button>
+                <Radio.Button
+                  value="lockUser"
+                  className="w-[63px] text-[10px] flex items-center justify-center lg:w-[90px] lg:text-sm"
+                >
+                  LockUser
+                </Radio.Button>
+                <Radio.Button
+                  value="unlockUser"
+                  className="w-[63px] text-[10px] flex items-center justify-center lg:w-[90px] lg:text-sm"
+                >
+                  UnlockUser
+                </Radio.Button>
+              </div>
+            </Radio.Group>
+          </div>
           {/* 动态表单 */}
-          {(currentAction === "withdraw" ||
-            currentAction === "refund" ||
-            currentAction === "lockTx" ||
-            currentAction === "unlockTx") && (
-            <Form.Item<FieldType>
-              label="Transaction ID Bytes32"
-              name="transactionIdBytes32"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input the transaction id bytes32!",
-                },
-              ]}
-            >
-              <Input
-                className="ml-16"
-                placeholder={ currentAction === "lockTx" ||
-            currentAction === "unlockTx" ? "Transaction ID Bytes32":"Transaction ID Bytes32 01,Transaction ID Bytes32 02"}
-              />
-            </Form.Item>
-          )}
-
-          {(currentAction === "lockUser" || currentAction === "unlockUser") && (
-            <Form.Item<FieldType>
-              label="Address"
-              name="address"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input the address!",
-                },
-              ]}
-            >
-              <Input className="ml-16" placeholder="address" />
-            </Form.Item>
-          )}
-
-          {currentAction === "withdraw" && (
-            <Form.Item<FieldType>
-              label="Receiving Address"
-              name="receivingAddress"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your receiving address!",
-                },
-              ]}
-            >
-              <Input className="ml-16" />
-            </Form.Item>
-          )}
-
-          {currentAction === "order" && (
-            <>
+          <div className="flex flex-col items-center lg:mt-8 mt-8">
+            {(currentAction === "withdraw" ||
+              currentAction === "refund" ||
+              currentAction === "lockTx" ||
+              currentAction === "unlockTx") && (
               <Form.Item<FieldType>
-                label="Currency"
-                name="currency"
+                label="Transaction ID Bytes32"
+                name="transactionIdBytes32"
+                className="lg:w-[800px] w-[300px] lg:mr-[150px]"
                 rules={[
                   {
                     required: true,
-                    message: "Please select your currency!",
+                    message: "Please input the transaction id bytes32!",
                   },
                 ]}
               >
-                <Select className="ml-16">
-                  <Option value="USDC">USDC</Option>
-                </Select>
+                <Input
+                  className=""
+                  placeholder={
+                    currentAction === "lockTx" || currentAction === "unlockTx"
+                      ? "Transaction ID Bytes32"
+                      : "Transaction ID Bytes32 01,Transaction ID Bytes32 02"
+                  }
+                />
               </Form.Item>
+            )}
+            {(currentAction === "lockUser" ||
+              currentAction === "unlockUser") && (
               <Form.Item<FieldType>
-                label="Amount"
-                name="amount"
+                label="Address"
+                name="address"
+                className="lg:w-[800px] w-[300px] lg:mr-[240px]"
                 rules={[
                   {
                     required: true,
-                    message: "Please input the transaction amount!",
+                    message: "Please input the address!",
                   },
                 ]}
               >
-                <Input className="ml-16" />
+                <Input className="" placeholder="address" />
               </Form.Item>
-              <Form.Item<FieldType>
-                label="Merchant Address"
-                name="merchanAddress"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input the merchant address!",
-                  },
-                ]}
-              >
-                <Input className="ml-16" />
-              </Form.Item>
-            </>
-          )}
+            )}
 
-          <div className="flex justify-center flex-col w-screen items-center">
+            {currentAction === "withdraw" && (
+              <Form.Item<FieldType>
+                label="Receiving Address"
+                name="receivingAddress"
+                className="lg:w-[800px] w-[300px] lg:mr-[150px]"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your receiving address!",
+                  },
+                ]}
+              >
+                <Input className="" />
+              </Form.Item>
+            )}
+          </div>
+
+          <div className="flex justify-center flex-col items-center">
             <span>tx: {txHash}</span>
             {currentAction === "order" ? (
               <span>transactionIdBytes32: {txIdBytes32}</span>
             ) : null}
           </div>
+          <div className="flex justify-center mt-4">
+            <Form.Item className="lg:hidden">
+              <Button type="primary" htmlType="submit">
+                Submit ({currentAction})
+              </Button>
+            </Form.Item>
+          </div>
           <Form.Item
             style={{
               position: "absolute",
               bottom: -60,
-              right: 0,
+              right: 200,
             }}
+            className="lg:block hidden"
           >
             <Button type="primary" htmlType="submit">
               Submit ({currentAction})

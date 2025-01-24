@@ -10,7 +10,7 @@ export default function Navigate() {
             <img src={Logo} alt="" className="w-[50px] h-[50px]"/>
             <span className="font-extrabold text-2xl ml-2 text-white">NOVAFI</span>
           </div>
-          <div className="flex items-center font-bold text-xl">
+          <div className="flex items-center font-bold text-xl mr-2">
             <ConnectButton showBalance={false} chainStatus="icon"/>
           </div>
         </nav>
