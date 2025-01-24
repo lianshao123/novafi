@@ -1,6 +1,6 @@
 import Navigate from "@/components/home/navigate";
 import type { FormProps } from "antd";
-import { Button, Form, Input, message, Radio, Select } from "antd";
+import { Button, Form, Input, message, Select } from "antd";
 import { ethers } from "ethers";
 import { useState, useEffect } from "react";
 import { useWalletClient, useConfig } from "wagmi";
@@ -26,7 +26,7 @@ export default function Index() {
   const [form] = Form.useForm();
   const { data: walletClient } = useWalletClient();
   const config = useConfig();
-  const [currentAction, setCurrentAction] = useState("order"); // 当前操作类型
+  const [currentAction] = useState("order"); // 当前操作类型
   const [txHash, setTxHash] = useState<string>("");
   const [txIdBytes32, setTxIdBytes32] = useState<string>("");
 

@@ -1,6 +1,6 @@
 import Navigate from "@/components/home/navigate";
 import type { FormProps } from "antd";
-import { Button, Form, Input, message, Radio, Select } from "antd";
+import { Button, Form, Input, message, Radio } from "antd";
 import { ethers } from "ethers";
 import { useState, useEffect } from "react";
 import { useWalletClient, useConfig } from "wagmi";
@@ -16,8 +16,6 @@ type FieldType = {
   merchanAddress?: string;
   address?: string;
 };
-
-const { Option } = Select;
 
 const echoooMallPaymentAddress = "0x0A9901653413432F193a4397293667ebDEFc9da9";
 const USDCAddress = "0xA3799376C9C71a02e9b79369B929654B037a410D";
