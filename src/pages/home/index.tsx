@@ -7,6 +7,7 @@ import { useWalletClient, useConfig } from "wagmi";
 import { writeContract } from "wagmi/actions";
 import { abi } from "@/config/EchoooMallPayment.json";
 import { abi as erc20Abi } from "@/config/Erc20.json";
+import { useLocation } from "react-router-dom";
 
 type FieldType = {
   transactionIdBytes32?: string;
@@ -24,6 +25,9 @@ const echoooMallPaymentAddress = "0x0A9901653413432F193a4397293667ebDEFc9da9";
 const USDCAddress = "0xA3799376C9C71a02e9b79369B929654B037a410D";
 
 export default function Index() {
+  // const { transactionId, amount, merchatAddress } = useParams();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
   const [form] = Form.useForm();
   const { data: walletClient } = useWalletClient();
   const config = useConfig();
@@ -105,17 +109,13 @@ export default function Index() {
           ],
         });
         console.log("approveTx:", approveTx);
-        // const transactionIdBytes32 = ethers.utils.formatBytes32String(
-        //   String(Math.random())
-        // );
-        // setTxIdBytes32(transactionIdBytes32);
         
         const txPay = await writeContract(config, {
           address: echoooMallPaymentAddress,
           abi,
           functionName: "placeOrder",
           args: [
-            txIdBytes32,
+            values.transactionId,
             USDCAddress,
             ethers.utils.parseUnits(String(values.amount), 18),
             values.merchanAddress,
@@ -131,14 +131,10 @@ export default function Index() {
   };
 
   useEffect(() => {
-    const transactionIdBytes32 = ethers.utils.formatBytes32String(
-      String(Math.random())
-    );
-    setTxIdBytes32(transactionIdBytes32)
     setTimeout(() => {
-      form.setFieldsValue({ transactionId: transactionIdBytes32 });
+      form.setFieldsValue({ transactionId: queryParams.get("txId"), amount: queryParams.get("amount"), merchanAddress: queryParams.get("merchantAdd") });
     }, 100);
-  },[form])
+  },[])
 
   useEffect(() => {
     form.resetFields(); // 清空表单
@@ -181,15 +177,13 @@ export default function Index() {
                   </Form.Item>
                 </div>
                 <Form.Item<FieldType>
-                  // initialValue={txIdBytes32}
                   label="Transaction ID"
                   name="transactionId"
                   className="lg:w-[800px] w-[300px] lg:mr-[90px]"
                 >
-                  <Input readOnly/>
+                  <Input readOnly style={{ backgroundColor: "#f5f5f5", color: "#888" }}/>
                 </Form.Item>
                 <Form.Item<FieldType>
-                  initialValue="0.0001"
                   label="Amount"
                   name="amount"
                   className="lg:w-[800px] w-[300px] lg:mr-[90px]"
@@ -200,10 +194,9 @@ export default function Index() {
                     },
                   ]}
                 >
-                  <Input readOnly/>
+                  <Input readOnly style={{ backgroundColor: "#f5f5f5", color: "#888" }}/>
                 </Form.Item>
                 <Form.Item<FieldType>
-                  initialValue="0x24E273485a1331a4D5684c7F3bA8096ab8666bae"
                   label="Merchant Address"
                   name="merchanAddress"
                   className="lg:w-[800px] w-[300px] lg:mr-[90px]"
@@ -214,16 +207,13 @@ export default function Index() {
                     },
                   ]}
                 >
-                  <Input readOnly/>
+                  <Input readOnly style={{ backgroundColor: "#f5f5f5", color: "#888" }}/>
                 </Form.Item>
               </>
             )}
 
             <div className="flex justify-center flex-col w-screen items-center">
               <span>tx: {txHash}</span>
-              {/* {currentAction === "order" ? (
-                <span>transactionIdBytes32: {txIdBytes32}</span>
-              ) : null} */}
             </div>
             <Form.Item
               style={{
