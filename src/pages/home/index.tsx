@@ -179,6 +179,12 @@ export default function Index() {
                   label="Transaction ID"
                   name="transactionId"
                   className="lg:w-[800px] w-[300px] lg:mr-[90px]"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select your currency!",
+                    },
+                  ]}
                 >
                   <Input readOnly style={{ backgroundColor: "#f5f5f5", color: "#888" }}/>
                 </Form.Item>
