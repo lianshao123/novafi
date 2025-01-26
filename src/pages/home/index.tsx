@@ -15,6 +15,7 @@ type FieldType = {
   amount?: string;
   merchanAddress?: string;
   address?: string;
+  transactionId?: string;
 };
 
 const { Option } = Select;
@@ -93,6 +94,7 @@ export default function Index() {
         setTxHash(txUnlockUser);
         message.success("Unlock User successful!");
       } else {
+        
         const approveTx = await writeContract(config, {
           address: USDCAddress,
           abi: erc20Abi,
@@ -103,16 +105,17 @@ export default function Index() {
           ],
         });
         console.log("approveTx:", approveTx);
-        const transactionIdBytes32 = ethers.utils.formatBytes32String(
-          String(Math.random())
-        );
-        setTxIdBytes32(transactionIdBytes32);
+        // const transactionIdBytes32 = ethers.utils.formatBytes32String(
+        //   String(Math.random())
+        // );
+        // setTxIdBytes32(transactionIdBytes32);
+        
         const txPay = await writeContract(config, {
           address: echoooMallPaymentAddress,
           abi,
           functionName: "placeOrder",
           args: [
-            transactionIdBytes32,
+            txIdBytes32,
             USDCAddress,
             ethers.utils.parseUnits(String(values.amount), 18),
             values.merchanAddress,
@@ -126,6 +129,16 @@ export default function Index() {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    const transactionIdBytes32 = ethers.utils.formatBytes32String(
+      String(Math.random())
+    );
+    setTxIdBytes32(transactionIdBytes32)
+    setTimeout(() => {
+      form.setFieldsValue({ transactionId: transactionIdBytes32 });
+    }, 100);
+  },[form])
 
   useEffect(() => {
     form.resetFields(); // 清空表单
@@ -168,6 +181,14 @@ export default function Index() {
                   </Form.Item>
                 </div>
                 <Form.Item<FieldType>
+                  // initialValue={txIdBytes32}
+                  label="Transaction ID"
+                  name="transactionId"
+                  className="lg:w-[800px] w-[300px] lg:mr-[90px]"
+                >
+                  <Input readOnly/>
+                </Form.Item>
+                <Form.Item<FieldType>
                   initialValue="0.0001"
                   label="Amount"
                   name="amount"
@@ -179,7 +200,7 @@ export default function Index() {
                     },
                   ]}
                 >
-                  <Input />
+                  <Input readOnly/>
                 </Form.Item>
                 <Form.Item<FieldType>
                   initialValue="0x24E273485a1331a4D5684c7F3bA8096ab8666bae"
@@ -193,16 +214,16 @@ export default function Index() {
                     },
                   ]}
                 >
-                  <Input />
+                  <Input readOnly/>
                 </Form.Item>
               </>
             )}
 
             <div className="flex justify-center flex-col w-screen items-center">
               <span>tx: {txHash}</span>
-              {currentAction === "order" ? (
+              {/* {currentAction === "order" ? (
                 <span>transactionIdBytes32: {txIdBytes32}</span>
-              ) : null}
+              ) : null} */}
             </div>
             <Form.Item
               style={{
