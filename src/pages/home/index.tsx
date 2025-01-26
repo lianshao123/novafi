@@ -33,7 +33,6 @@ export default function Index() {
   const config = useConfig();
   const [currentAction] = useState("order"); // 当前操作类型
   const [txHash, setTxHash] = useState<string>("");
-  const [txIdBytes32, setTxIdBytes32] = useState<string>("");
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     try {
