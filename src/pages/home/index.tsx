@@ -168,6 +168,7 @@ export default function Index() {
                   </Form.Item>
                 </div>
                 <Form.Item<FieldType>
+                  initialValue="0.0001"
                   label="Amount"
                   name="amount"
                   className="lg:w-[800px] w-[300px] lg:mr-[90px]"
@@ -181,6 +182,7 @@ export default function Index() {
                   <Input />
                 </Form.Item>
                 <Form.Item<FieldType>
+                  initialValue="0x24E273485a1331a4D5684c7F3bA8096ab8666bae"
                   label="Merchant Address"
                   name="merchanAddress"
                   className="lg:w-[800px] w-[300px] lg:mr-[90px]"

@@ -3,7 +3,7 @@ import type { FormProps } from "antd";
 import { Button, Form, Input, message, Radio } from "antd";
 import { ethers } from "ethers";
 import { useState, useEffect } from "react";
-import { useWalletClient, useConfig } from "wagmi";
+import { useWalletClient, useConfig, useAccount } from "wagmi";
 import { writeContract } from "wagmi/actions";
 import { abi } from "@/config/EchoooMallPayment.json";
 import { abi as erc20Abi } from "@/config/Erc20.json";
@@ -27,6 +27,7 @@ export default function Index() {
   const [currentAction, setCurrentAction] = useState("withdraw"); // 当前操作类型
   const [txHash, setTxHash] = useState<string>("");
   const [txIdBytes32, setTxIdBytes32] = useState<string>("");
+  const { address, isConnected } = useAccount();
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     try {
@@ -129,6 +130,12 @@ export default function Index() {
     form.resetFields(); // 清空表单
     setTxHash("");
   }, [currentAction]);
+
+  useEffect(() => {
+    if (isConnected && address) {
+      form.setFieldsValue({ receivingAddress: address });
+    }
+  }, [isConnected, address, form]);
 
   return (
     <div className="flex flex-col w-screen h-screen bg-[#f7f9fb]">
