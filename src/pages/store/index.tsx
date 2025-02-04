@@ -52,17 +52,28 @@ export default function Index() {
         console.log("values======", values);
 
         const transactionBatch = values.transactionIdBytes32?.split(",");
-        const amounts = values.amount?.split(",").map(amount => ethers.utils.parseUnits(amount.trim(), 18));
+        const amounts = values.amount?.split(",").map(amount => ethers.utils.parseUnits(amount.trim(), 18)) as any[];
+        if(values.payMethod === "1") {
+          // 计算总退款金额
+          const totalRefundAmount = amounts.reduce((acc, amount) => acc.add(amount), ethers.BigNumber.from(0));
+          // 商户批准合约转账金额（用于 MerchantWithdrawal）
+          const approveTx = await writeContract(config, {
+            address: USDCAddress,
+            abi: erc20Abi,
+            functionName: "approve",
+            args: [
+              echoooMallPaymentAddress,
+              totalRefundAmount,
+            ],
+          });
+          console.log("ApproveTx:", approveTx);
+        }
 
         const txRefund = await writeContract(config, {
           address: echoooMallPaymentAddress,
           abi,
-          functionName: values.amount
-            ? "refundOrdersBatchFromMerchant"
-            : "refundOrdersBatch",
-          args: values.amount
-            ? [transactionBatch, amounts, values.payMethod]
-            : [transactionBatch, values.payMethod],
+          functionName: "refundOrdersBatchFromMerchant",
+          args: [transactionBatch, amounts, values.payMethod]
         });
         setTxHash(txRefund);
         message.success("Refund successful!");
