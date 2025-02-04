@@ -13,7 +13,8 @@ type FieldType = {
   transactionIdBytes32?: string;
   receivingAddress?: string;
   currency?: string;
-  amount?: string;
+  totalAmount?: string;
+  actualAmount?: string;
   merchanAddress?: string;
   address?: string;
   transactionId?: string;
@@ -21,7 +22,7 @@ type FieldType = {
 
 const { Option } = Select;
 
-const echoooMallPaymentAddress = "0x0A9901653413432F193a4397293667ebDEFc9da9";
+const echoooMallPaymentAddress = "0x82FfCAc4b0896AC1ab0F8DE62DEd6b93d986Cf30";
 const USDCAddress = "0xA3799376C9C71a02e9b79369B929654B037a410D";
 
 export default function Index() {
@@ -40,89 +41,33 @@ export default function Index() {
         console.error("No wallet client found.");
         return;
       }
-      if (currentAction === "withdraw") {
-        const transactionBatch = values.transactionIdBytes32?.split(",");
-        const txWithdraw = await writeContract(config, {
-          address: echoooMallPaymentAddress,
-          abi,
-          functionName: "withdrawFundsBatch",
-          args: [transactionBatch, values.receivingAddress],
-        });
-        setTxHash(txWithdraw);
-        message.success("Withdraw successful!");
-      } else if (currentAction === "refund") {
-        const transactionBatch = values.transactionIdBytes32?.split(",");
-        const txRefund = await writeContract(config, {
-          address: echoooMallPaymentAddress,
-          abi,
-          functionName: "refundOrdersBatch",
-          args: [transactionBatch],
-        });
-        setTxHash(txRefund);
-        message.success("Refund successful!");
-      } else if (currentAction === "lockTx") {
-        const txLock = await writeContract(config, {
-          address: echoooMallPaymentAddress,
-          abi,
-          functionName: "lockTransaction",
-          args: [values.transactionIdBytes32],
-        });
-        setTxHash(txLock);
-        message.success("Lock Transaction successful!");
-      } else if (currentAction === "unlockTx") {
-        const txUnlock = await writeContract(config, {
-          address: echoooMallPaymentAddress,
-          abi,
-          functionName: "unlockTransaction",
-          args: [values.transactionIdBytes32],
-        });
-        setTxHash(txUnlock);
-        message.success("Unlock Transaction successful!");
-      } else if (currentAction === "lockUser") {
-        const txLockUser = await writeContract(config, {
-          address: echoooMallPaymentAddress,
-          abi,
-          functionName: "lockUser",
-          args: [values.address],
-        });
-        setTxHash(txLockUser);
-        message.success("Lock User successful!");
-      } else if (currentAction === "unlockUser") {
-        const txUnlockUser = await writeContract(config, {
-          address: echoooMallPaymentAddress,
-          abi,
-          functionName: "unlockUser",
-          args: [values.address],
-        });
-        setTxHash(txUnlockUser);
-        message.success("Unlock User successful!");
-      } else {
-        
-        const approveTx = await writeContract(config, {
-          address: USDCAddress,
-          abi: erc20Abi,
-          functionName: "approve",
-          args: [
-            echoooMallPaymentAddress,
-            ethers.utils.parseUnits(String(values.amount), 18),
-          ],
-        });
-        console.log("approveTx:", approveTx);
-        
-        const txPay = await writeContract(config, {
-          address: echoooMallPaymentAddress,
-          abi,
-          functionName: "placeOrder",
-          args: [
-            values.transactionId,
-            USDCAddress,
-            ethers.utils.parseUnits(String(values.amount), 18),
-            values.merchanAddress,
-          ],
-        });
-        setTxHash(txPay);
-        message.success("Order placed successfully!");
-      }
+      if(Number(values.totalAmount) < Number(values.actualAmount)) return message.error("Abnormal amount!")
+      
+      const approveTx = await writeContract(config, {
+        address: USDCAddress,
+        abi: erc20Abi,
+        functionName: "approve",
+        args: [
+          echoooMallPaymentAddress,
+          ethers.utils.parseUnits(String(values.actualAmount), 18),
+        ],
+      });
+      console.log("approveTx:", approveTx);
+
+      const txPay = await writeContract(config, {
+        address: echoooMallPaymentAddress,
+        abi,
+        functionName: "placeOrder",
+        args: [
+          values.transactionId,
+          USDCAddress,
+          ethers.utils.parseUnits(String(values.totalAmount), 18),
+          ethers.utils.parseUnits(String(values.actualAmount), 18),
+          values.merchanAddress,
+        ],
+      });
+      setTxHash(txPay);
+      message.success("Order placed successfully!");
     } catch (error) {
       message.error("Transaction error!");
       console.error(error);
@@ -131,9 +76,14 @@ export default function Index() {
 
   useEffect(() => {
     setTimeout(() => {
-      form.setFieldsValue({ transactionId: queryParams.get("txId"), amount: queryParams.get("amount"), merchanAddress: queryParams.get("merchantAdd") });
+      form.setFieldsValue({
+        transactionId: queryParams.get("txId"),
+        actualAmount: queryParams.get("actualAmount"),
+        merchanAddress: queryParams.get("merchantAdd"),
+        totalAmount: queryParams.get("totalAmount"),
+      });
     }, 100);
-  },[])
+  }, []);
 
   useEffect(() => {
     form.resetFields(); // 清空表单
@@ -150,7 +100,7 @@ export default function Index() {
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           className="lg:w-[800px] w-[300px]"
-          style={{ position: "relative"}} 
+          style={{ position: "relative" }}
           initialValues={{ currency: "USDC" }}
           onFinish={onFinish}
           autoComplete="off"
@@ -186,11 +136,14 @@ export default function Index() {
                     },
                   ]}
                 >
-                  <Input readOnly style={{ backgroundColor: "#f5f5f5", color: "#888" }}/>
+                  <Input
+                    readOnly
+                    style={{ backgroundColor: "#f5f5f5", color: "#888" }}
+                  />
                 </Form.Item>
                 <Form.Item<FieldType>
-                  label="Amount"
-                  name="amount"
+                  label="Total Amount"
+                  name="totalAmount"
                   className="lg:w-[800px] w-[300px] lg:mr-[90px]"
                   rules={[
                     {
@@ -199,7 +152,26 @@ export default function Index() {
                     },
                   ]}
                 >
-                  <Input readOnly style={{ backgroundColor: "#f5f5f5", color: "#888" }}/>
+                  <Input
+                    readOnly
+                    style={{ backgroundColor: "#f5f5f5", color: "#888" }}
+                  />
+                </Form.Item>
+                <Form.Item<FieldType>
+                  label="Actual Amount"
+                  name="actualAmount"
+                  className="lg:w-[800px] w-[300px] lg:mr-[90px]"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input the transaction amount!",
+                    },
+                  ]}
+                >
+                  <Input
+                    readOnly
+                    style={{ backgroundColor: "#f5f5f5", color: "#888" }}
+                  />
                 </Form.Item>
                 <Form.Item<FieldType>
                   label="Merchant Address"
@@ -212,7 +184,10 @@ export default function Index() {
                     },
                   ]}
                 >
-                  <Input readOnly style={{ backgroundColor: "#f5f5f5", color: "#888" }}/>
+                  <Input
+                    readOnly
+                    style={{ backgroundColor: "#f5f5f5", color: "#888" }}
+                  />
                 </Form.Item>
               </>
             )}

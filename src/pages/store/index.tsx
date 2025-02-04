@@ -1,6 +1,6 @@
 import Navigate from "@/components/home/navigate";
 import type { FormProps } from "antd";
-import { Button, Form, Input, message, Radio } from "antd";
+import { Button, Form, Input, message, Radio, Select } from "antd";
 import { ethers } from "ethers";
 import { useState, useEffect } from "react";
 import { useWalletClient, useConfig, useAccount } from "wagmi";
@@ -15,9 +15,12 @@ type FieldType = {
   amount?: string;
   merchanAddress?: string;
   address?: string;
+  payMethod?: string;
 };
 
-const echoooMallPaymentAddress = "0x0A9901653413432F193a4397293667ebDEFc9da9";
+const { Option } = Select;
+
+const echoooMallPaymentAddress = "0x82FfCAc4b0896AC1ab0F8DE62DEd6b93d986Cf30";
 const USDCAddress = "0xA3799376C9C71a02e9b79369B929654B037a410D";
 
 export default function Index() {
@@ -46,12 +49,20 @@ export default function Index() {
         setTxHash(txWithdraw);
         message.success("Withdraw successful!");
       } else if (currentAction === "refund") {
+        console.log("values======", values);
+
         const transactionBatch = values.transactionIdBytes32?.split(",");
+        const amounts = values.amount?.split(",").map(amount => ethers.utils.parseUnits(amount.trim(), 18));
+
         const txRefund = await writeContract(config, {
           address: echoooMallPaymentAddress,
           abi,
-          functionName: "refundOrdersBatch",
-          args: [transactionBatch],
+          functionName: values.amount
+            ? "refundOrdersBatchFromMerchant"
+            : "refundOrdersBatch",
+          args: values.amount
+            ? [transactionBatch, amounts, values.payMethod]
+            : [transactionBatch, values.payMethod],
         });
         setTxHash(txRefund);
         message.success("Refund successful!");
@@ -147,7 +158,7 @@ export default function Index() {
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 1000, position: "relative" }}
-          initialValues={{ currency: "USDC" }}
+          initialValues={{ payMethod: "0" }}
           onFinish={onFinish}
           autoComplete="off"
         >
@@ -243,7 +254,33 @@ export default function Index() {
                 <Input className="" placeholder="address" />
               </Form.Item>
             )}
-
+            {currentAction === "refund" && (
+              <div className="flex justify-center flex-col">
+                <Form.Item<FieldType>
+                  label="Pay Method"
+                  name="payMethod"
+                  className="lg:w-[800px] w-[300px] lg:mr-[90px]"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select your payMethod!",
+                    },
+                  ]}
+                >
+                  <Select defaultValue="0">
+                    <Option value="0">contract</Option>
+                    <Option value="1">self</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item<FieldType>
+                  label="Amount"
+                  name="amount"
+                  className="lg:w-[800px] w-[300px] lg:mr-[150px]"
+                >
+                  <Input placeholder="Leave blank for all, or amount 01,amount 02" />
+                </Form.Item>
+              </div>
+            )}
             {currentAction === "withdraw" && (
               <Form.Item<FieldType>
                 label="Receiving Address"
