@@ -288,7 +288,7 @@ export default function Index() {
                   name="amount"
                   className="lg:w-[800px] w-[300px] lg:mr-[150px]"
                 >
-                  <Input placeholder="Leave blank for all, or amount 01,amount 02" />
+                  <Input placeholder="amount 01,amount 02" />
                 </Form.Item>
               </div>
             )}
