@@ -22,7 +22,7 @@ type FieldType = {
 
 const { Option } = Select;
 
-const echoooMallPaymentAddress = "0x82FfCAc4b0896AC1ab0F8DE62DEd6b93d986Cf30";
+const echoooMallPaymentAddress = "0x7510a7Af4B149fB409f1282d466d7209918f5eC5";
 const USDCAddress = "0xA3799376C9C71a02e9b79369B929654B037a410D";
 
 export default function Index() {
@@ -49,7 +49,7 @@ export default function Index() {
         functionName: "approve",
         args: [
           echoooMallPaymentAddress,
-          ethers.utils.parseUnits(String(values.actualAmount), 18),
+          ethers.utils.parseUnits(String(values.actualAmount), 6),
         ],
       });
       console.log("approveTx:", approveTx);
@@ -61,8 +61,8 @@ export default function Index() {
         args: [
           values.transactionId,
           USDCAddress,
-          ethers.utils.parseUnits(String(values.totalAmount), 18),
-          ethers.utils.parseUnits(String(values.actualAmount), 18),
+          ethers.utils.parseUnits(String(values.totalAmount), 6),
+          ethers.utils.parseUnits(String(values.actualAmount), 6),
           values.merchanAddress,
         ],
       });

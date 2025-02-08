@@ -1,12 +1,18 @@
 import Navigate from "@/components/home/navigate";
 import type { FormProps } from "antd";
-import { Button, Form, Input, message, Radio, Select } from "antd";
+import { Button, Form, Input, message, Radio, Select, List, Modal } from "antd";
 import { ethers } from "ethers";
 import { useState, useEffect } from "react";
-import { useWalletClient, useConfig, useAccount } from "wagmi";
+import {
+  useWalletClient,
+  useConfig,
+  useAccount,
+  useReadContract as readContract,
+} from "wagmi";
 import { writeContract } from "wagmi/actions";
 import { abi } from "@/config/EchoooMallPayment.json";
 import { abi as erc20Abi } from "@/config/Erc20.json";
+import { formatTimestamp } from "@/utils/formatTime"
 
 type FieldType = {
   transactionIdBytes32?: string;
@@ -20,7 +26,7 @@ type FieldType = {
 
 const { Option } = Select;
 
-const echoooMallPaymentAddress = "0x82FfCAc4b0896AC1ab0F8DE62DEd6b93d986Cf30";
+const echoooMallPaymentAddress = "0x7510a7Af4B149fB409f1282d466d7209918f5eC5";
 const USDCAddress = "0xA3799376C9C71a02e9b79369B929654B037a410D";
 
 export default function Index() {
@@ -29,8 +35,33 @@ export default function Index() {
   const config = useConfig();
   const [currentAction, setCurrentAction] = useState("withdraw"); // 当前操作类型
   const [txHash, setTxHash] = useState<string>("");
-  const [txIdBytes32, setTxIdBytes32] = useState<string>("");
   const { address, isConnected } = useAccount();
+  const [orderData, setOrderData] = useState<any[]>([]);
+  const [txId, setTxId] = useState<string | null>(null);
+  const [setOrderDetails] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // 合约调用的读取钩子，避免在外部函数中调用
+  const { data } = readContract({
+    address: echoooMallPaymentAddress,
+    abi: abi,
+    functionName: "getMerchantOrders",
+    args: [address],
+  });
+
+  const { data: detailData, isLoading: detailIsLoading, isError: detailIsError } = readContract({
+    address: echoooMallPaymentAddress,
+    abi: abi,
+    functionName: "getOrderDetails",
+    args: [txId],
+  });
+
+  useEffect(() => {
+    if (detailData) {
+      console.log("detailData==========", detailData);
+      setOrderDetails(detailData);
+    }
+  }, [detailData]);
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     try {
@@ -52,19 +83,21 @@ export default function Index() {
         console.log("values======", values);
 
         const transactionBatch = values.transactionIdBytes32?.split(",");
-        const amounts = values.amount?.split(",").map(amount => ethers.utils.parseUnits(amount.trim(), 18)) as any[];
-        if(values.payMethod === "1") {
+        const amounts = values.amount
+          ?.split(",")
+          .map((amount) => ethers.utils.parseUnits(amount.trim(), 18)) as any[];
+        if (values.payMethod === "1") {
           // 计算总退款金额
-          const totalRefundAmount = amounts.reduce((acc, amount) => acc.add(amount), ethers.BigNumber.from(0));
+          const totalRefundAmount = amounts.reduce(
+            (acc, amount) => acc.add(amount),
+            ethers.BigNumber.from(0)
+          );
           // 商户批准合约转账金额（用于 MerchantWithdrawal）
           const approveTx = await writeContract(config, {
             address: USDCAddress,
             abi: erc20Abi,
             functionName: "approve",
-            args: [
-              echoooMallPaymentAddress,
-              totalRefundAmount,
-            ],
+            args: [echoooMallPaymentAddress, totalRefundAmount],
           });
           console.log("ApproveTx:", approveTx);
         }
@@ -73,7 +106,7 @@ export default function Index() {
           address: echoooMallPaymentAddress,
           abi,
           functionName: "refundOrdersBatchFromMerchant",
-          args: [transactionBatch, amounts, values.payMethod]
+          args: [transactionBatch, amounts, values.payMethod],
         });
         setTxHash(txRefund);
         message.success("Refund successful!");
@@ -113,40 +146,20 @@ export default function Index() {
         });
         setTxHash(txUnlockUser);
         message.success("Unlock User successful!");
-      } else {
-        const approveTx = await writeContract(config, {
-          address: USDCAddress,
-          abi: erc20Abi,
-          functionName: "approve",
-          args: [
-            echoooMallPaymentAddress,
-            ethers.utils.parseUnits(String(values.amount), 18),
-          ],
-        });
-        console.log("approveTx:", approveTx);
-        const transactionIdBytes32 = ethers.utils.formatBytes32String(
-          String(Math.random())
-        );
-        setTxIdBytes32(transactionIdBytes32);
-        const txPay = await writeContract(config, {
-          address: echoooMallPaymentAddress,
-          abi,
-          functionName: "placeOrder",
-          args: [
-            transactionIdBytes32,
-            USDCAddress,
-            ethers.utils.parseUnits(String(values.amount), 18),
-            values.merchanAddress,
-          ],
-        });
-        setTxHash(txPay);
-        message.success("Order placed successfully!");
       }
     } catch (error) {
       message.error("Transaction error!");
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    if (currentAction === "detail") {
+      setOrderData(data as string[]);
+    } else {
+      setOrderData([]); // 其他操作时清空数据
+    }
+  }, [currentAction]);
 
   useEffect(() => {
     form.resetFields(); // 清空表单
@@ -158,6 +171,11 @@ export default function Index() {
       form.setFieldsValue({ receivingAddress: address });
     }
   }, [isConnected, address, form]);
+
+  const showTxDetail = (txId: string) => {
+    setTxId(txId)
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="flex flex-col w-screen h-screen bg-[#f7f9fb]">
@@ -174,15 +192,14 @@ export default function Index() {
           autoComplete="off"
         >
           {/* 切换模式按钮 */}
-          <div className="flex justify-center">
+          <div className="flex justify-center bg-red-300">
             <Radio.Group
               onChange={(e) => setCurrentAction(e.target.value)}
               value={currentAction}
               style={{ position: "absolute", top: -40 }}
-              className="lg:left-[200px]"
+              className=""
             >
               <div className="flex">
-                {/* <Radio.Button value="order">Order</Radio.Button> */}
                 <Radio.Button
                   value="withdraw"
                   className="w-[63px] text-[10px] flex items-center justify-center lg:w-[90px] lg:text-sm"
@@ -218,6 +235,12 @@ export default function Index() {
                   className="w-[63px] text-[10px] flex items-center justify-center lg:w-[90px] lg:text-sm"
                 >
                   UnlockUser
+                </Radio.Button>
+                <Radio.Button
+                  value="detail"
+                  className="w-[63px] text-[10px] flex items-center justify-center lg:w-[90px] lg:text-sm"
+                >
+                  Detail
                 </Radio.Button>
               </div>
             </Radio.Group>
@@ -307,13 +330,34 @@ export default function Index() {
                 <Input className="" />
               </Form.Item>
             )}
+            {currentAction === "detail" && (
+              <Form.Item<FieldType>
+                name="receivingAddress"
+                className="lg:w-[800px] w-[300px] flex justify-center"
+              >
+                <List
+                  bordered
+                  className="w-[800px] flex justify-center"
+                  dataSource={orderData}
+                  renderItem={(item: string, index: number) => (
+                    <List.Item>
+                      <div
+                        className="cursor-pointer hover:underline"
+                        onClick={() => {
+                          showTxDetail(item);
+                        }}
+                      >
+                        {index}: {item}
+                      </div>
+                    </List.Item>
+                  )}
+                />
+              </Form.Item>
+            )}
           </div>
 
           <div className="flex justify-center flex-col items-center">
-            <span>tx: {txHash}</span>
-            {currentAction === "order" ? (
-              <span>transactionIdBytes32: {txIdBytes32}</span>
-            ) : null}
+            {currentAction === "detail" ? null : <span>tx: {txHash}</span>}
           </div>
           <div className="flex justify-center mt-4">
             <Form.Item className="lg:hidden">
@@ -322,20 +366,48 @@ export default function Index() {
               </Button>
             </Form.Item>
           </div>
-          <Form.Item
-            style={{
-              position: "absolute",
-              bottom: -60,
-              right: 200,
-            }}
-            className="lg:block hidden"
-          >
-            <Button type="primary" htmlType="submit">
-              Submit ({currentAction})
-            </Button>
-          </Form.Item>
+          {currentAction === "detail" ? null : (
+            <Form.Item
+              style={{
+                position: "absolute",
+                bottom: -60,
+                right: 200,
+              }}
+              className="lg:block hidden"
+            >
+              <Button type="primary" htmlType="submit">
+                Submit ({currentAction})
+              </Button>
+            </Form.Item>
+          )}
         </Form>
       </div>
+      <Modal
+        title="Order Details"
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)} // 点击取消关闭弹窗
+        footer={null}
+      >
+        {detailIsLoading ? (
+          <p>Loading...</p>
+        ) : detailIsError ? (
+          <p>Error loading details.</p>
+        ) : (
+          <div className="flex flex-col items-center">
+            <p>user: {(detailData as any).user}</p>
+            <p>token: {(detailData as any).token}</p>
+            <p>totalAmount: {ethers.utils.formatUnits(Number((detailData as any).totalAmount),6)}</p>
+            <p>paidAmount: {ethers.utils.formatUnits(Number((detailData as any).paidAmount),6)}</p>
+            <p>paymentAddress: {(detailData as any).paymentAddress}</p>
+            <p>timestamp: {formatTimestamp(Number((detailData as any).timestamp))}</p>
+            <p>refundedAmount: {Number((detailData as any).refundedAmount)}</p>
+            <p>isWithdrawn: {String((detailData as any).isWithdrawn)}</p>
+            <p>isRefunded: {String((detailData as any).isRefunded)}</p>
+            <p>isLocked: {String((detailData as any).isLocked)}</p>
+          </div>
+          // <pre>{JSON.stringify(detailData)}</pre> // 格式化展示 detailData
+        )}
+      </Modal>
     </div>
   );
 }
