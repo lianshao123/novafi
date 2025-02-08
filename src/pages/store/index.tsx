@@ -418,7 +418,7 @@ export default function Index() {
             </p>
             <p>
               refundedAmount:{" "}
-              {formatTimestamp(Number((detailData as any).refundedAmount))}
+              {ethers.utils.formatUnits(Number((detailData as any).refundedAmount))}
             </p>
             <p>isWithdrawn: {String((detailData as any).isWithdrawn)}</p>
             <p>isRefunded: {String((detailData as any).isRefunded)}</p>
