@@ -38,7 +38,6 @@ export default function Index() {
   const { address, isConnected } = useAccount();
   const [orderData, setOrderData] = useState<any[]>([]);
   const [txId, setTxId] = useState<string | null>(null);
-  const [setOrderDetails] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 合约调用的读取钩子，避免在外部函数中调用
@@ -56,12 +55,12 @@ export default function Index() {
     args: [txId],
   });
 
-  useEffect(() => {
-    if (detailData) {
-      console.log("detailData==========", detailData);
-      setOrderDetails(detailData);
-    }
-  }, [detailData]);
+  // useEffect(() => {
+  //   if (detailData) {
+  //     console.log("detailData==========", detailData);
+  //     // setOrderDetails(detailData);
+  //   }
+  // }, [detailData]);
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     try {
