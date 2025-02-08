@@ -12,7 +12,7 @@ import {
 import { writeContract } from "wagmi/actions";
 import { abi } from "@/config/EchoooMallPayment.json";
 import { abi as erc20Abi } from "@/config/Erc20.json";
-import { formatTimestamp } from "@/utils/formatTime"
+import { formatTimestamp } from "@/utils/formatTime";
 
 type FieldType = {
   transactionIdBytes32?: string;
@@ -48,7 +48,11 @@ export default function Index() {
     args: [address],
   });
 
-  const { data: detailData, isLoading: detailIsLoading, isError: detailIsError } = readContract({
+  const {
+    data: detailData,
+    isLoading: detailIsLoading,
+    isError: detailIsError,
+  } = readContract({
     address: echoooMallPaymentAddress,
     abi: abi,
     functionName: "getOrderDetails",
@@ -79,12 +83,10 @@ export default function Index() {
         setTxHash(txWithdraw);
         message.success("Withdraw successful!");
       } else if (currentAction === "refund") {
-        console.log("values======", values);
-
         const transactionBatch = values.transactionIdBytes32?.split(",");
         const amounts = values.amount
           ?.split(",")
-          .map((amount) => ethers.utils.parseUnits(amount.trim(), 18)) as any[];
+          .map((amount) => ethers.utils.parseUnits(amount.trim(), 6)) as any[];
         if (values.payMethod === "1") {
           // 计算总退款金额
           const totalRefundAmount = amounts.reduce(
@@ -172,7 +174,7 @@ export default function Index() {
   }, [isConnected, address, form]);
 
   const showTxDetail = (txId: string) => {
-    setTxId(txId)
+    setTxId(txId);
     setIsModalOpen(true);
   };
 
@@ -395,11 +397,29 @@ export default function Index() {
           <div className="flex flex-col items-center">
             <p>user: {(detailData as any).user}</p>
             <p>token: {(detailData as any).token}</p>
-            <p>totalAmount: {ethers.utils.formatUnits(Number((detailData as any).totalAmount),6)}</p>
-            <p>paidAmount: {ethers.utils.formatUnits(Number((detailData as any).paidAmount),6)}</p>
+            <p>
+              totalAmount:{" "}
+              {ethers.utils.formatUnits(
+                Number((detailData as any).totalAmount),
+                6
+              )}
+            </p>
+            <p>
+              paidAmount:{" "}
+              {ethers.utils.formatUnits(
+                Number((detailData as any).paidAmount),
+                6
+              )}
+            </p>
             <p>paymentAddress: {(detailData as any).paymentAddress}</p>
-            <p>timestamp: {formatTimestamp(Number((detailData as any).timestamp))}</p>
-            <p>refundedAmount: {Number((detailData as any).refundedAmount)}</p>
+            <p>
+              timestamp:{" "}
+              {formatTimestamp(Number((detailData as any).timestamp))}
+            </p>
+            <p>
+              refundedAmount:{" "}
+              {formatTimestamp(Number((detailData as any).refundedAmount))}
+            </p>
             <p>isWithdrawn: {String((detailData as any).isWithdrawn)}</p>
             <p>isRefunded: {String((detailData as any).isRefunded)}</p>
             <p>isLocked: {String((detailData as any).isLocked)}</p>
