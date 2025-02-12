@@ -3,8 +3,8 @@ import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 
 import {
   arbitrum,
-  bsc,
-  mainnet,
+  // bsc,
+  // mainnet,
   optimism,
   polygon,
   // sepolia,
@@ -14,8 +14,8 @@ export const config = getDefaultConfig({
   appName: 'jump3',
   projectId: 'uc5jc0bPlJnEz6EyHsMn-zPCu_XTMog-', 
   chains: [
-    mainnet,
-    bsc,
+    // mainnet,
+    // bsc,
     arbitrum,
     polygon,
     optimism,

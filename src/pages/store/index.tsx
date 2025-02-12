@@ -59,12 +59,6 @@ export default function Index() {
     args: [txId],
   });
 
-  // useEffect(() => {
-  //   if (detailData) {
-  //     console.log("detailData==========", detailData);
-  //     // setOrderDetails(detailData);
-  //   }
-  // }, [detailData]);
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     try {
@@ -154,17 +148,16 @@ export default function Index() {
     }
   };
 
+
   useEffect(() => {
+    
+    form.resetFields(); // 清空表单
+    setTxHash("");
     if (currentAction === "detail") {
       setOrderData(data as string[]);
     } else {
       setOrderData([]); // 其他操作时清空数据
     }
-  }, [currentAction]);
-
-  useEffect(() => {
-    form.resetFields(); // 清空表单
-    setTxHash("");
   }, [currentAction]);
 
   useEffect(() => {
