@@ -25,7 +25,6 @@ type FieldType = {
 const { Option } = Select;
 
 export default function Index() {
-  // const { transactionId, amount, merchatAddress } = useParams();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const [form] = Form.useForm();
@@ -43,6 +42,7 @@ export default function Index() {
   const contracts = chainId ? token[chainId as keyof typeof token] : null;
   const echoooMallPaymentAddress = contracts?.EchoooMallPayment?.address;
   const tokenAddress = contracts?.[selectedCurrency as keyof typeof contracts]?.address;
+  // @ts-ignore
   const tokenDecimals = contracts?.[selectedCurrency as keyof typeof contracts]?.decimal || 6;
 
   // 使用 hook 方式获取授权数量
