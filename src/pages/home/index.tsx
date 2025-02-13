@@ -98,7 +98,7 @@ export default function Index() {
         message.error("Abnormal amount!");
         return;
       }
-      
+      console.log("allowance:", allowance)
       const requiredAmount = ethers.utils.parseUnits(String(values.actualAmount), tokenDecimals);
       const allowanceBN = ethers.BigNumber.from(allowance || 0);
       
