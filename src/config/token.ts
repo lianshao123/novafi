@@ -2,7 +2,7 @@
  * @Author: peng 1063629816@qq.com
  * @Date: 2025-02-12 13:47:31
  * @LastEditors: peng 1063629816@qq.com
- * @LastEditTime: 2025-02-12 15:37:39
+ * @LastEditTime: 2025-02-13 14:25:34
  * @FilePath: /novafi-front/novafi/src/config/token.ts
  * @Description: 支持的token信息
  */
@@ -26,8 +26,8 @@ export const token = {
   },
   "10": {
     USDC: {
-      // address: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85", // 主网
-      address: "0xA3799376C9C71a02e9b79369B929654B037a410D",  //测试
+      address: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85", // 主网
+      // address: "0xA3799376C9C71a02e9b79369B929654B037a410D",  //测试
       decimal: 6,
     },
     USDT: {
