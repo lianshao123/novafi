@@ -13,7 +13,7 @@ import { writeContract } from "wagmi/actions";
 import { abi } from "@/config/EchoooMallPayment.json";
 import { abi as erc20Abi } from "@/config/Erc20.json";
 import { formatTimestamp } from "@/utils/formatTime";
-import { token } from "@/config/token";
+import { token, tokenTest } from "@/config/token";
 
 type FieldType = {
   transactionIdBytes32?: string;
@@ -26,6 +26,9 @@ type FieldType = {
 };
 
 const { Option } = Select;
+
+// 根据环境选择使用的 token 配置
+const tokenConfig = process.env.NODE_ENV === 'dev' ? tokenTest : token;
 
 // 修改按钮配置
 const actionOptions = [
@@ -53,7 +56,7 @@ interface OrderDetails {
 
 // 添加一个辅助函数来获取代币小数位数
 const getTokenDecimals = (tokenAddress: string): number => {
-  for (const chainTokens of Object.values(token)) {
+  for (const chainTokens of Object.values(tokenConfig)) {
     for (const info of Object.values(chainTokens)) {
       if (
         "address" in info &&
@@ -157,7 +160,7 @@ export default function Index() {
 
   // 根据 chain.id 获取合约地址
   const chainId = chain?.id.toString();
-  const contracts = chainId ? token[chainId as keyof typeof token] : null;
+  const contracts = chainId ? tokenConfig[chainId as keyof typeof tokenConfig] : null;
   const echoooMallPaymentAddress = contracts?.EchoooMallPayment?.address;
 
   // 合约调用的读取钩子，避免在外部函数中调用

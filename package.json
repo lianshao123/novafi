@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=dev vite",
+    "prod": "cross-env NODE_ENV=prod vite",
     "test": "cross-env NODE_ENV=test vite",
     "build": "tsc && vite build",
     "build:test": "tsc && cross-env NODE_ENV=test vite build",

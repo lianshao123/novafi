@@ -11,8 +11,8 @@ import {
 } from 'wagmi/chains';
 
 export const config = getDefaultConfig({
-  appName: 'jump3',
-  projectId: 'uc5jc0bPlJnEz6EyHsMn-zPCu_XTMog-', 
+  appName: 'Jeton Protocol',
+  projectId: 'f3a855e63993e03d0cad20e991f2ca59', 
   chains: [
     // mainnet,
     // bsc,

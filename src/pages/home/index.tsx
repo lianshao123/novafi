@@ -9,7 +9,7 @@ import { abi } from "@/config/EchoooMallPayment.json";
 import { abi as erc20Abi } from "@/config/Erc20.json";
 import { useLocation } from "react-router-dom";
 import { isAddress } from 'ethers/lib/utils';
-import { token } from "@/config/token";
+import { token, tokenTest } from "@/config/token";
 
 type FieldType = {
   transactionIdBytes32?: string;
@@ -23,6 +23,10 @@ type FieldType = {
 };
 
 const { Option } = Select;
+
+
+// 根据环境选择使用的 token 配置
+const tokenConfig = process.env.NODE_ENV === 'dev' ? tokenTest : token;
 
 export default function Index() {
   const location = useLocation();
@@ -39,7 +43,7 @@ export default function Index() {
 
   // 根据 chain.id 获取合约地址
   const chainId = chain?.id.toString();
-  const contracts = chainId ? token[chainId as keyof typeof token] : null;
+  const contracts = chainId ? tokenConfig[chainId as keyof typeof tokenConfig] : null;
   const echoooMallPaymentAddress = contracts?.EchoooMallPayment?.address;
   const tokenAddress = contracts?.[selectedCurrency as keyof typeof contracts]?.address;
   // @ts-ignore
@@ -142,6 +146,7 @@ export default function Index() {
   };
 
   useEffect(() => {
+    console.log("tokenConfig:", tokenConfig)
     setTimeout(() => {
       form.setFieldsValue({
         transactionId: queryParams.get("txId"),
