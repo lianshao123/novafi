@@ -14,6 +14,12 @@ import { abi } from "@/config/EchoooMallPayment.json";
 import { abi as erc20Abi } from "@/config/Erc20.json";
 import { formatTimestamp } from "@/utils/formatTime";
 import { token, tokenTest } from "@/config/token";
+import { 
+  validateTransactionIds, 
+  validateSingleTransactionId, 
+  validateAmounts, 
+  validateAddress 
+} from '@/utils/validators';
 
 type FieldType = {
   transactionIdBytes32?: string;
@@ -68,69 +74,6 @@ const getTokenDecimals = (tokenAddress: string): number => {
     }
   }
   return 6;
-};
-
-// 添加验证函数
-const validateTransactionIds = (_: any, value: string) => {
-  if (!value || !value.trim()) {
-    return Promise.reject("Transaction IDs are required!");
-  }
-  const ids = value.split(",");
-  if (ids.length === 0) {
-    return Promise.reject("At least one Transaction ID is required!");
-  }
-  for (const id of ids) {
-    if (!id.trim()) {
-      return Promise.reject("Empty Transaction ID is not allowed!");
-    }
-    if (!/^0x[0-9a-fA-F]{64}$/.test(id.trim())) {
-      return Promise.reject(
-        "Each Transaction ID must be a 32-byte hex string!"
-      );
-    }
-  }
-  return Promise.resolve();
-};
-
-const validateAmounts = (_: any, value: string) => {
-  if (!value || !value.trim()) {
-    return Promise.reject("Amounts are required!");
-  }
-  const amounts = value.split(",");
-  if (amounts.length === 0) {
-    return Promise.reject("At least one amount is required!");
-  }
-  for (const amount of amounts) {
-    if (!amount.trim()) {
-      return Promise.reject("Empty amount is not allowed!");
-    }
-    if (isNaN(Number(amount.trim())) || Number(amount.trim()) <= 0) {
-      return Promise.reject("Each amount must be a valid positive number!");
-    }
-  }
-  return Promise.resolve();
-};
-
-// 验证钱包地址
-const validateAddress = (_: any, value: string) => {
-  if (!value || !value.trim()) {
-    return Promise.reject("Address is required!");
-  }
-  if (!ethers.utils.isAddress(value.trim())) {
-    return Promise.reject("Please enter a valid wallet address!");
-  }
-  return Promise.resolve();
-};
-
-// 验证单个 Transaction ID
-const validateSingleTransactionId = (_: any, value: string) => {
-  if (!value || !value.trim()) {
-    return Promise.reject("Transaction ID is required!");
-  }
-  if (!/^0x[0-9a-fA-F]{64}$/.test(value.trim())) {
-    return Promise.reject("Transaction ID must be a 32-byte hex string!");
-  }
-  return Promise.resolve();
 };
 
 // 添加一个安全的格式化函数
