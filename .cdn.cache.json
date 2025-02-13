@@ -1,0 +1,375 @@
+{
+	"m72zbwyr": [
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/index.html",
+			"md5": "49157d76d3af5676cf5a05204ea12879"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/vite.svg",
+			"md5": "8e3a10e157f75ada21ab742c022d5430"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/Arc-R3PUWRPJ-89f7fe18.js",
+			"md5": "2d88568ab9ce55e96edc480fe5f6e813"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/Brave-24BM36UM-c9f6bef2.js",
+			"md5": "94933e2e90590264fc48bd56999bb26b"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/Browser-4R4QKTV2-fb41f584.js",
+			"md5": "62e719302adf79ab32849efbf704468d"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/Chrome-TLI42HDP-6c3a13ef.js",
+			"md5": "dc12af503e74b0be7b70d048d1a1a8ba"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/Edge-AZ34LAFM-a633a5f6.js",
+			"md5": "bc083c8addb179c59593d9216fd99eaf"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/Firefox-ZDK7RHKK-5830e666.js",
+			"md5": "7b572c2a2c4d043a7fcfaf1b8e18f8c6"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/Linux-VYP66PDO-822e33c6.js",
+			"md5": "b9b0118da616532e32c5159de5af8b6b"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/Macos-5QL4JBJE-2ccc70a7.js",
+			"md5": "608d37318ae492d0ecc6ef7110dc5af1"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/Opera-BKMCKUXC-42eb5773.js",
+			"md5": "bf81f6c4e6781c70d8394e0a3aa6c192"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/Safari-PXQIVS6N-014ec84c.js",
+			"md5": "33887362cb9a98424d305ab2a1d74a4c"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/Windows-GTAT3OTE-26307651.js",
+			"md5": "1017745f25be9c08eb5f942870d8db17"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/ar_AR-OBNLAES4-3875c546.js",
+			"md5": "ef3f1429e4a061db44d73d85e6413a00"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/arbitrum-IA4OWRTN-04d06b5d.js",
+			"md5": "19f9c15715108a3a973eed2dfeb421fb"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/assets-NU2OP443-f2b42c29.js",
+			"md5": "33ae24799663e13f83cee5987fa8f728"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/avalanche-MXEFEDSW-7c43b5dd.js",
+			"md5": "0006e892b5d59c87495cbd5dbbf27676"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/base-Z4LFBE5D-a49c8c01.js",
+			"md5": "cbd9650bda9637c64cff5c8bfb069a85"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/blast-TN2WIMWF-93f498e0.js",
+			"md5": "eaa76e93506fc63aca729565299b5d60"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/bsc-RVE67I5L-04856910.js",
+			"md5": "38a3e19a421247238d943e422f6c1ef8"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/ccip-70e777a8.js",
+			"md5": "05e044390f058d005576d49e92aab6ab"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/coinbaseWallet-WWX6LF36-ff8dff1b.js",
+			"md5": "694e1f6dd72af86c8c477f9608975a74"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/connect-MR6XDLIE-281cd6f6.js",
+			"md5": "24e8359370388d10cce3888adff8a9dc"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/create-X4WFHLCW-fac25a4f.js",
+			"md5": "d031082c11d7a0ed669319c5e9f79805"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/cronos-ROYR77VZ-29ad21f3.js",
+			"md5": "ca9ce261cbf83c641ffceb3c7638bb89"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/en_US-UZE3UTP2-03c9666b.js",
+			"md5": "0ff843d8ffc6fcc88c9ca5936695a79b"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/es_419-O2GTQZ7N-e4137373.js",
+			"md5": "80a44f2d54daceb0ffbb72a30fa9cae7"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/ethereum-RFBAMUVK-d34c3fc9.js",
+			"md5": "2da3d5ccf423e6f842609e4fbafa26a6"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/fr_FR-L4QMIDHZ-d4160f35.js",
+			"md5": "92c84a88130baf5061ffdee14e7c1ddd"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/hardhat-NEEC6JX7-e261276f.js",
+			"md5": "f475e4cb280de1ab2adfc1459eaeb499"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/hi_IN-JNRRBHWZ-a3baec0d.js",
+			"md5": "362ba97d7d7b734a66ac10407699e9db"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/id_ID-ZGYTXMOP-3fb51813.js",
+			"md5": "9ecfc030786004b32883f3d2f26a5d46"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-0e624473.css",
+			"md5": "3b602cb4f615a13b6bade67333c5b68f"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-6577bde1.js",
+			"md5": "e9a47658cd8ddd97541c76dd15123c78"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-8f8fafd2.js",
+			"md5": "5bd4b2b73ce666eabab61bf9e7cceb69"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-edd07026.js",
+			"md5": "e7edeb274c9fd45185ddd761b4a083e4"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-f1a12300.js",
+			"md5": "4f40264ad96c2c0e3f08b81dd2b036f9"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-f9347823.js",
+			"md5": "63a684d4ae2cb3ece225abbb5412cc45"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/ja_JP-HOTHN4EA-a4ed6bdc.js",
+			"md5": "bbaf0fb21c30af9f575f9a20a01d8b6c"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/klaytn-QTDBZIB3-1f7117af.js",
+			"md5": "2827e070d3de1670355d9451a43b2b24"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/ko_KR-GIW3THCV-9725fc26.js",
+			"md5": "0789bcb97e33d5bacc9c34743c8d2006"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/login-CWDTIDNK-8d95a610.js",
+			"md5": "baa5f0f7116deb709bd4b3a54c31eaff"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/manta-5V6W5D7G-cf4a7f5d.js",
+			"md5": "53f415f5fe7e9f881888846e573416f2"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/mantle-KBL3OIYT-ce066004.js",
+			"md5": "ce56eb664af1f4e2aeb2436540cf0283"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/metaMaskWallet-YFHEHW7V-1f5c9db6.js",
+			"md5": "c9faabc0cac059efd75278832f35fba0"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/optimism-VD7XDD2W-36bb3ba8.js",
+			"md5": "6f85f03701d0f206fa17fe36cbbc3d67"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/polygon-WWEUOMKW-9ab1e573.js",
+			"md5": "644261d59aa87936d0a9547152b5111c"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/pt_BR-F7QMXAJN-47d3fd6a.js",
+			"md5": "ed6598089b82af02a8af6ca9cea263c8"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/rainbowWallet-2SR6TVBF-4ca036b5.js",
+			"md5": "8a0e974aa17cd852cfd0a349aa6cde2a"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/refresh-HJGJRASX-ffa7bd58.js",
+			"md5": "a163707b3a625fdfa6b08bd260018031"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/ronin-PNHX5V6H-3a7f4d1f.js",
+			"md5": "ae4aa91873beb8aab73f4ce7286dacb5"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/ru_RU-X7PLXGFL-8f0f1448.js",
+			"md5": "c1c336ecc936146dcfd6fc85d6b26f21"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/scan-DEOT2M37-4394e524.js",
+			"md5": "c23abcfe05a5e237181e83d002678d5e"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/sign-A7IJEUT5-f23ac888.js",
+			"md5": "041063c58940b2497f4e6cdde469514d"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/th_TH-SRCDFUPR-a4fa288c.js",
+			"md5": "f64e1ff513872c49dae629e35665a215"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/token-8794b1da.js",
+			"md5": "6bf46d5f4cf26938d4435d5b1f9a0695"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/tr_TR-YZS5CIK5-afbb615d.js",
+			"md5": "62cd024cb6d3d245c99f3d8754a20a86"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/uk_UA-Y3657REC-9c75bd92.js",
+			"md5": "e899d17295c210ea400ccb8f964b9ccb"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/walletConnectWallet-FNSU4KNU-24906fea.js",
+			"md5": "05a8359b297686a38136a26a10311301"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/xdc-X7V4QFNF-c302191e.js",
+			"md5": "10e47d45340a53b456467dfd3d3919fc"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/zetachain-BMJKVYBN-b37f2c8c.js",
+			"md5": "6e2d4ae69f717bf25f376929363ea816"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/zh_CN-UU5O3W4T-de09ce4f.js",
+			"md5": "2d8ccd84f3e044359b9090f727704ff1"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/zkSync-JL26RB7U-c5241f87.js",
+			"md5": "8493b6ce20c898c55011e6f5c8449acb"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/zora-YZH32HP3-13f3fbdd.js",
+			"md5": "d935e498f5a03156356612b401ca357a"
+		}
+	],
+	"deployVersion": "m732ugc0",
+	"m72zw99g": [
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/index.html",
+			"md5": "83c15b6de0faca99c30d0545b3edf7fa"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/ccip-c0736def.js",
+			"md5": "c9487b8148cd4af2ad09c0f4acbf4fa2"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/en_US-UZE3UTP2-f8f552f4.js",
+			"md5": "0b1d121c21d860a77307726d0eade4fe"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-3c449288.js",
+			"md5": "f03fb1248679b40fc96083ed379ae4e4"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-530851e9.js",
+			"md5": "1fb7c9be95a008871a4750fab5820225"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-6dc3b04d.js",
+			"md5": "16b950219cce903a98749cc32e6f244d"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-91923ff5.js",
+			"md5": "c6224a4ca33a6b93a0d2b71b64131d39"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-fca3ce8b.js",
+			"md5": "ff082d38017892d234de3cbedaba5828"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/token-bb389e20.js",
+			"md5": "439c357b3ef9612077215fcde457b1d9"
+		}
+	],
+	"m732soh2": [
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/index.html",
+			"md5": "9431230061acfb6f5039d5037b01e5f7"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/ccip-3e720fc9.js",
+			"md5": "55e3ce06caf4b7bd47d26ff09eeeca9d"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/en_US-UZE3UTP2-47f04383.js",
+			"md5": "23429284cdd9a9168f58d2cb7568e2ab"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-06b4c65f.js",
+			"md5": "006346857f5fa59f0142deef6e20160f"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-0abff1ea.js",
+			"md5": "6facba5fd1ae5ad5d735bd8c3c76e7ac"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-2d4a18cc.js",
+			"md5": "99b6caf65d8a37c75afcc77a9cfd0114"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-3989ea6e.js",
+			"md5": "671c3211e402b3d22feeccbff4f23c67"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-a848bfc0.js",
+			"md5": "a76fd1f3588bdbe7052c77062ca62b90"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/token-1b3ff264.js",
+			"md5": "67f3bcc12ecac480be6f457d10a3a7e0"
+		}
+	],
+	"m732ugc0": [
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/index.html",
+			"md5": "dd05f0972040d50cb8c46fe4b7cfec2e"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/ccip-8d4aea87.js",
+			"md5": "73f4f51ef8e2ef24b7e2fa71ae0485b4"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/en_US-UZE3UTP2-3a216fb3.js",
+			"md5": "3e94a1031e29d6da1f5ee781c41d6395"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-14b44ac7.js",
+			"md5": "3591e5895c9c5d8eec970c6895b369bd"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-3a7edb3f.js",
+			"md5": "9888013c031616b2b5a9527851b1b361"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-c49db395.js",
+			"md5": "e5bab1ae30a23e2efc891e83f7b5be38"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-f5a08a15.js",
+			"md5": "5eea61894cbcba983e032577e1721f20"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/index-ff8e3f69.js",
+			"md5": "8da8485b6aea73397fddbfe7a0144133"
+		},
+		{
+			"cdnLink": "https://cdn.echooo.xyz/front-end/static/fed-vs-novafipay/assets/token-a74db5c5.js",
+			"md5": "92b0c517159ac6a20c5a883b9be4023f"
+		}
+	]
+}

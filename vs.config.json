@@ -1,0 +1,23 @@
+{
+	"upload": {
+		"uploadPath": "dist",
+		"s3Static": "static/fed-vs-novafipay"
+	},
+	"deploy": {
+		"baseUrlExample": "baseUrl: ['/', 'en-us/', 'zh-hk/', 'test/']",
+		"baseUrl": [
+			"novafi/"
+		]
+	},
+	"aws": {
+		"Bucket": "echooo-cdn",
+		"prefix": "front-end",
+		"HostName": "https://cdn.echooo.xyz"
+	},
+	"crowdin": {
+		"project": "fed-vs-novafipay",
+		"workDir": "src",
+		"reg": "{#(.+?)#}",
+		"keysDir": "src/_i18n"
+	}
+}

@@ -1,7 +1,7 @@
 {
-  "name": "fed-waas-echooo",
+  "name": "fed-vs-novafipay",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=dev vite",
@@ -9,6 +9,8 @@
     "build": "tsc && vite build",
     "build:test": "tsc && cross-env NODE_ENV=test vite build",
     "build:prod": "tsc && cross-env NODE_ENV=prod vite build",
+    "deploy": "npm run build:prod && yuca deploy -e pay",
+    "deploy:test": "npm run build:test && yuca deploy -e testpay",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
