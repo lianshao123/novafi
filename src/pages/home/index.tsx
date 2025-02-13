@@ -146,7 +146,6 @@ export default function Index() {
   };
 
   useEffect(() => {
-    console.log("tokenConfig:", tokenConfig)
     setTimeout(() => {
       form.setFieldsValue({
         transactionId: queryParams.get("txId"),

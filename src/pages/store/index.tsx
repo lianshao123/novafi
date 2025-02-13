@@ -236,7 +236,6 @@ export default function Index() {
       if (!showOk) return;
       setShowOk(false);
       if (currentAction === "withdraw") {
-        console.log("withdraw", values);
         const transactionBatch = values.transactionIdBytes32?.split(",");
         const txWithdraw = await writeContract(config, {
           address: echoooMallPaymentAddress as `0x${string}`,
@@ -294,7 +293,6 @@ export default function Index() {
           message.error("Refund amount cannot be greater than actual amount");
           return;
         }
-        console.log("tokenAmounts:", tokenAmounts.entries());
         if (tokenAmounts.size === 0) {
           message.error("No valid orders found for refund.");
           return;
