@@ -27,8 +27,8 @@ type FieldType = {
 
 const { Option } = Select;
 
-// 添加按钮配置数组
-const actionButtons = [
+// 修改按钮配置
+const actionOptions = [
   { value: "withdraw", label: "Withdraw" },
   { value: "refund", label: "Refund" },
   { value: "lockTx", label: "LockTx" },
@@ -70,18 +70,20 @@ const getTokenDecimals = (tokenAddress: string): number => {
 // 添加验证函数
 const validateTransactionIds = (_: any, value: string) => {
   if (!value || !value.trim()) {
-    return Promise.reject('Transaction IDs are required!');
+    return Promise.reject("Transaction IDs are required!");
   }
-  const ids = value.split(',');
+  const ids = value.split(",");
   if (ids.length === 0) {
-    return Promise.reject('At least one Transaction ID is required!');
+    return Promise.reject("At least one Transaction ID is required!");
   }
   for (const id of ids) {
     if (!id.trim()) {
-      return Promise.reject('Empty Transaction ID is not allowed!');
+      return Promise.reject("Empty Transaction ID is not allowed!");
     }
     if (!/^0x[0-9a-fA-F]{64}$/.test(id.trim())) {
-      return Promise.reject('Each Transaction ID must be a 32-byte hex string!');
+      return Promise.reject(
+        "Each Transaction ID must be a 32-byte hex string!"
+      );
     }
   }
   return Promise.resolve();
@@ -89,19 +91,18 @@ const validateTransactionIds = (_: any, value: string) => {
 
 const validateAmounts = (_: any, value: string) => {
   if (!value || !value.trim()) {
-    return Promise.reject('Amounts are required!');
+    return Promise.reject("Amounts are required!");
   }
-  const amounts = value.split(',');
+  const amounts = value.split(",");
   if (amounts.length === 0) {
-    return Promise.reject('At least one amount is required!');
+    return Promise.reject("At least one amount is required!");
   }
   for (const amount of amounts) {
     if (!amount.trim()) {
-      return Promise.reject('Empty amount is not allowed!');
+      return Promise.reject("Empty amount is not allowed!");
     }
     if (isNaN(Number(amount.trim())) || Number(amount.trim()) <= 0) {
-      return Promise.reject('Each amount must be a valid positive number!');
-
+      return Promise.reject("Each amount must be a valid positive number!");
     }
   }
   return Promise.resolve();
@@ -110,10 +111,10 @@ const validateAmounts = (_: any, value: string) => {
 // 验证钱包地址
 const validateAddress = (_: any, value: string) => {
   if (!value || !value.trim()) {
-    return Promise.reject('Address is required!');
+    return Promise.reject("Address is required!");
   }
   if (!ethers.utils.isAddress(value.trim())) {
-    return Promise.reject('Please enter a valid wallet address!');
+    return Promise.reject("Please enter a valid wallet address!");
   }
   return Promise.resolve();
 };
@@ -121,12 +122,23 @@ const validateAddress = (_: any, value: string) => {
 // 验证单个 Transaction ID
 const validateSingleTransactionId = (_: any, value: string) => {
   if (!value || !value.trim()) {
-    return Promise.reject('Transaction ID is required!');
+    return Promise.reject("Transaction ID is required!");
   }
   if (!/^0x[0-9a-fA-F]{64}$/.test(value.trim())) {
-    return Promise.reject('Transaction ID must be a 32-byte hex string!');
+    return Promise.reject("Transaction ID must be a 32-byte hex string!");
   }
   return Promise.resolve();
+};
+
+// 添加一个安全的格式化函数
+const safeFormatUnits = (value: any, decimals: number = 6) => {
+  try {
+    if (!value || isNaN(Number(value))) return "0";
+    return ethers.utils.formatUnits(value, decimals);
+  } catch (error) {
+    console.error("Format error:", error);
+    return "0";
+  }
 };
 
 export default function Index() {
@@ -139,6 +151,9 @@ export default function Index() {
   const [orderData, setOrderData] = useState<any[]>([]);
   const [txId, setTxId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showOk, setShowOk] = useState<boolean>(true);
+  const pageSize = 5;
 
   // 根据 chain.id 获取合约地址
   const chainId = chain?.id.toString();
@@ -215,7 +230,10 @@ export default function Index() {
         console.error("No wallet client found.");
         return;
       }
+      if (!showOk) return;
+      setShowOk(false);
       if (currentAction === "withdraw") {
+        console.log("withdraw", values);
         const transactionBatch = values.transactionIdBytes32?.split(",");
         const txWithdraw = await writeContract(config, {
           address: echoooMallPaymentAddress as `0x${string}`,
@@ -226,15 +244,20 @@ export default function Index() {
         setTxHash(txWithdraw);
         message.success("Withdraw successful!");
       } else if (currentAction === "refund") {
-        const transactionBatch = values.transactionIdBytes32?.split(",").map(id => id.trim()) || [];
-        const amountArray = values.amount?.split(",").map(amount => amount.trim()) || [];
-        
+        const transactionBatch =
+          values.transactionIdBytes32?.split(",").map((id) => id.trim()) || [];
+        const amountArray =
+          values.amount?.split(",").map((amount) => amount.trim()) || [];
+
         if (transactionBatch.length !== amountArray.length) {
-          message.error("Number of Transaction IDs must match number of amounts!");
+          message.error(
+            "Number of Transaction IDs must match number of amounts!"
+          );
           return;
         }
 
-        const orderDetailsPromises = transactionBatch.map(txId => getOrderDetails(txId)) || [];
+        const orderDetailsPromises =
+          transactionBatch.map((txId) => getOrderDetails(txId)) || [];
         const orderDetailsList = await Promise.all(orderDetailsPromises);
 
         // 按代币地址归集金额
@@ -337,7 +360,9 @@ export default function Index() {
         setTxHash(txUnlockUser);
         message.success("Unlock User successful!");
       }
+      setShowOk(true);
     } catch (error) {
+      setShowOk(true);
       message.error("Transaction error!");
       console.error(error);
     }
@@ -378,28 +403,18 @@ export default function Index() {
           onFinish={onFinish}
           autoComplete="off"
         >
-          {/* 切换模式按钮 */}
-          <div className="flex justify-center">
-            <Radio.Group
-              onChange={(e) => setCurrentAction(e.target.value)}
-              value={currentAction}
-              style={{ position: "absolute", top: -40 }}
-            >
-              <div className="flex">
-                {actionButtons.map((button) => (
-                  <Radio.Button
-                    key={button.value}
-                    value={button.value}
-                    className="w-[63px] text-[10px] flex items-center justify-center lg:w-[90px] lg:text-sm"
-                  >
-                    {button.label}
-                  </Radio.Button>
-                ))}
-              </div>
-            </Radio.Group>
-          </div>
           {/* 动态表单 */}
           <div className="flex flex-col items-center lg:mt-8 mt-8">
+            <Form.Item<FieldType>
+              label="Action Type"
+              className="lg:w-[800px] w-[300px] lg:mr-[150px]"
+            >
+              <Select
+                  value={currentAction}
+                  onChange={(value) => setCurrentAction(value)}
+                  options={actionOptions}
+                />
+              </Form.Item>
             {(currentAction === "withdraw" ||
               currentAction === "refund" ||
               currentAction === "lockTx" ||
@@ -409,12 +424,13 @@ export default function Index() {
                 name="transactionIdBytes32"
                 className="lg:w-[800px] w-[300px] lg:mr-[150px]"
                 rules={[
-                  { 
-                    validator: currentAction === "withdraw" || currentAction === "refund" 
-                      ? validateTransactionIds 
-                      : validateSingleTransactionId 
+                  {
+                    validator:
+                      currentAction === "withdraw" || currentAction === "refund"
+                        ? validateTransactionIds
+                        : validateSingleTransactionId,
                   },
-                  { required: true, message: "" }
+                  { required: true, message: "" },
                 ]}
               >
                 <Input
@@ -432,10 +448,10 @@ export default function Index() {
               <Form.Item<FieldType>
                 label="Address"
                 name="address"
-                className="lg:w-[800px] w-[300px] lg:mr-[240px]"
+                className="lg:w-[800px] w-[300px] lg:mr-[150px]"
                 rules={[
                   { validator: validateAddress },
-                  { required: true, message: "" }
+                  { required: true, message: "" },
                 ]}
               >
                 <Input placeholder="address" />
@@ -463,7 +479,10 @@ export default function Index() {
                   label="Amount"
                   name="amount"
                   className="lg:w-[800px] w-[300px] lg:mr-[150px]"
-                  rules={[{ validator: validateAmounts }, { required: true, message: "" } ]}
+                  rules={[
+                    { validator: validateAmounts },
+                    { required: true, message: "" },
+                  ]}
                 >
                   <Input placeholder="amount 01,amount 02" />
                 </Form.Item>
@@ -476,7 +495,7 @@ export default function Index() {
                 className="lg:w-[800px] w-[300px] lg:mr-[150px]"
                 rules={[
                   { validator: validateAddress },
-                  { required: true, message: "" }
+                  { required: true, message: "" },
                 ]}
               >
                 <Input className="" placeholder="address" />
@@ -489,98 +508,153 @@ export default function Index() {
               >
                 <List
                   bordered
-                  className="w-[800px] flex justify-center"
-                  dataSource={orderData}
+                  className="lg:w-[800px] w-[300px] bg-white rounded-lg shadow-sm flex items-center flex-col pt-4"
+                  dataSource={orderData?.slice(
+                    (currentPage - 1) * pageSize,
+                    currentPage * pageSize
+                  )}
+                  pagination={{
+                    onChange: (page) => {
+                      setCurrentPage(page);
+                    },
+                    pageSize: pageSize,
+                    total: orderData?.length,
+                    current: currentPage,
+                    showSizeChanger: false,
+                    showQuickJumper: false,
+                    className: "mt-4",
+                  }}
                   renderItem={(item: string, index: number) => (
-                    <List.Item>
+                    <List.Item className="hover:bg-gray-50 transition-colors">
                       <div
-                        className="cursor-pointer hover:underline"
-                        onClick={() => {
-                          showTxDetail(item);
-                        }}
+                        className="w-full px-4 py-2 flex items-center cursor-pointer"
+                        onClick={() => showTxDetail(item)}
                       >
-                        {index}: {item}
+                        <span className="text-gray-400 mr-4 w-8">
+                          {(currentPage - 1) * pageSize + index + 1}
+                        </span>
+                        <span className="text-gray-700 font-mono break-all hover:text-blue-500">
+                          {item}
+                        </span>
                       </div>
                     </List.Item>
                   )}
+                  locale={{
+                    emptyText: (
+                      <div className="py-8 text-center text-gray-500">
+                        No transaction records
+                      </div>
+                    ),
+                  }}
                 />
               </Form.Item>
             )}
           </div>
 
           <div className="flex justify-center flex-col items-center">
-            {currentAction === "detail" ? null : <span>tx: {txHash}</span>}
-          </div>
-          <div className="flex justify-center mt-4">
-            <Form.Item className="lg:hidden">
-              <Button type="primary" htmlType="submit">
-                Ok
-              </Button>
-            </Form.Item>
+            {currentAction === "detail" ? null : (
+              <div className="text-end my-4">
+                {txHash && <span className="text-gray-40/0">tx: {txHash}</span>}
+              </div>
+            )}
           </div>
           {currentAction === "detail" ? null : (
-            <Form.Item
-              style={{
-                position: "absolute",
-                bottom: -60,
-                right: 200,
-              }}
-              className="lg:block hidden"
-            >
-              <Button type="primary" htmlType="submit">
+            <div className="flex justify-end mt-8 lg:w-[800px] w-[300px]">
+              <Button
+                type={showOk ? "primary" : "default"}
+                htmlType="submit"
+                className="w-[100px]"
+              >
                 Ok
               </Button>
-            </Form.Item>
+            </div>
           )}
         </Form>
       </div>
       <Modal
         title="Order Details"
         open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)} // 点击取消关闭弹窗
+        onCancel={() => setIsModalOpen(false)}
         footer={null}
+        width={600}
       >
         {detailIsLoading ? (
           <p>Loading...</p>
         ) : detailIsError ? (
           <p>Error loading details.</p>
         ) : (
-          <div className="flex flex-col items-center">
-            <p>user: {(detailData as any).user}</p>
-            <p>token: {(detailData as any).token}</p>
-            <p>
-              totalAmount:{" "}
-              {ethers.utils.formatUnits(
-                Number((detailData as any).totalAmount),
-                6
-              )}
-            </p>
-            <p>
-              paidAmount:{" "}
-              {ethers.utils.formatUnits(
-                Number((detailData as any).paidAmount),
-                6
-              )}
-            </p>
-            <p>paymentAddress: {(detailData as any).paymentAddress}</p>
-            <p>
-              timestamp:{" "}
-              {formatTimestamp(Number((detailData as any).timestamp))}
-            </p>
-            <p>
-              refundedAmount:{" "}
-              {ethers.utils.formatUnits(
-                Number((detailData as any).refundedAmount)
-              )}
-            </p>
-            <p>isWithdrawn: {String((detailData as any).isWithdrawn)}</p>
-            <p>isRefunded: {String((detailData as any).isRefunded)}</p>
-            <p>isLocked: {String((detailData as any).isLocked)}</p>
+          <div className="space-y-4 p-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col space-y-4">
+                <div className="bg-gray-50 p-3 rounded">
+                  <p className="text-gray-500 text-sm">User</p>
+                  <p className="text-gray-900 break-all">
+                    {(detailData as any)?.user}
+                  </p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded">
+                  <p className="text-gray-500 text-sm">Token</p>
+                  <p className="text-gray-900 break-all">
+                    {(detailData as any)?.token}
+                  </p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded">
+                  <p className="text-gray-500 text-sm">Payment Address</p>
+                  <p className="text-gray-900 break-all">
+                    {(detailData as any)?.paymentAddress}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col space-y-4">
+                <div className="bg-gray-50 p-3 rounded">
+                  <p className="text-gray-500 text-sm">Total Amount</p>
+                  <p className="text-gray-900">
+                    {safeFormatUnits((detailData as any)?.totalAmount)}
+                  </p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded">
+                  <p className="text-gray-500 text-sm">Paid Amount</p>
+                  <p className="text-gray-900">
+                    {safeFormatUnits((detailData as any)?.paidAmount)}
+                  </p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded">
+                  <p className="text-gray-500 text-sm">Refunded Amount</p>
+                  <p className="text-gray-900">
+                    {safeFormatUnits((detailData as any)?.refundedAmount)}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-4 gap-4 mt-4">
+              <div className="bg-gray-50 p-3 rounded text-center">
+                <p className="text-gray-500 text-sm">Withdrawn</p>
+                <p className="text-gray-900">
+                  {String((detailData as any)?.isWithdrawn)}
+                </p>
+              </div>
+              <div className="bg-gray-50 p-3 rounded text-center">
+                <p className="text-gray-500 text-sm">Refunded</p>
+                <p className="text-gray-900">
+                  {String((detailData as any)?.isRefunded)}
+                </p>
+              </div>
+              <div className="bg-gray-50 p-3 rounded text-center">
+                <p className="text-gray-500 text-sm">Locked</p>
+                <p className="text-gray-900">
+                  {String((detailData as any)?.isLocked)}
+                </p>
+              </div>
+              <div className="bg-gray-50 p-3 rounded text-center">
+                <p className="text-gray-500 text-sm">Time</p>
+                <p className="text-gray-900">
+                  {formatTimestamp(Number((detailData as any)?.timestamp))}
+                </p>
+              </div>
+            </div>
           </div>
-          // <pre>{JSON.stringify(detailData)}</pre> // 格式化展示 detailData
         )}
       </Modal>
     </div>
   );
 }
-
